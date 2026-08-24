@@ -452,6 +452,22 @@
       text-transform: uppercase;
     }
 
+    @media (max-width: 900px), (hover: none) and (pointer: coarse) {
+      .progress-track {
+        z-index: 70;
+        top: 0;
+        right: 0;
+        bottom: auto;
+        left: 0;
+        width: auto;
+        height: 2px;
+      }
+      .progress-fill {
+        transform: scaleX(0);
+        transform-origin: left center;
+      }
+    }
+
     @media (max-width: 760px) {
       .site-header { height: 66px; }
       .header-meta span:last-child { display: none; }
@@ -476,7 +492,6 @@
       .chapter-nav .nav-name { display: none; }
       .chapter-nav a::before, .chapter-nav a::after { display: none; }
       .chapter-nav a[aria-current="true"] { color: var(--page-bg); background: var(--page-fg); }
-      .progress-track { top: 66px; }
       #orb-stage { width: min(112vw, 560px); height: min(112vw, 560px); }
       .scene { min-height: 170svh; }
       .scene-frame { padding: 86px 18px 82px; }
@@ -766,6 +781,7 @@
     const scenes = [...document.querySelectorAll(".scene")];
     const navLinks = [...document.querySelectorAll(".chapter-nav a")];
     const progressFill = document.querySelector(".progress-fill");
+    const mobileProgress = matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)");
     const metaTheme = document.querySelector('meta[name="theme-color"]');
     const desktopStates = [
       { x: 70, y: 52, s: 1,    g: 1, bg: "#F5FBFF", fg: "#171717" },
@@ -928,7 +944,8 @@
         else link.removeAttribute("aria-current");
       });
       const maximum = Math.max(1, document.documentElement.scrollHeight - innerHeight);
-      progressFill.style.transform = `scaleY(${clamp(pageY / maximum)})`;
+      const progress = clamp(pageY / maximum);
+      progressFill.style.transform = mobileProgress.matches ? `scaleX(${progress})` : `scaleY(${progress})`;
     }
 
     function requestScrollSync() {
