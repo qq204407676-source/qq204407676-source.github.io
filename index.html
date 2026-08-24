@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>李默 · AI 产品经理</title>
+<title>李烽立 · AI 产品经理</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    monopo saigon 设计系统 · 移植
@@ -26,8 +29,8 @@
   --r-pill:75px;
 
   /* 排版 */
-  --font-primary:"Roobert","Neue Montreal","Helvetica Neue","Inter",-apple-system,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  --font-display:"Raleway","Montserrat","Jost",-apple-system,sans-serif;
+  --font-primary:"Cormorant Garamond","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Georgia,"Times New Roman",serif;
+  --font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
   --font-mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
 
   /* 动效：耐心、滑行 */
@@ -41,6 +44,7 @@
 html{scroll-behavior:smooth}
 body{
   font-family:var(--font-primary);
+  font-weight:300;
   background:var(--obsidian);
   color:var(--paper);
   line-height:1.5;
@@ -102,7 +106,7 @@ nav{
   transition:background .8s var(--ease);
 }
 nav.scrolled{background:rgba(0,0,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
-.logo{font-weight:600;font-size:1.15rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
+.logo{font-weight:300;font-size:1.15rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
 .logo .mark{width:9px;height:9px;border-radius:50%;background:var(--paper);display:inline-block}
 .nav-links{display:flex;gap:4px}
 .nav-links a{
@@ -203,8 +207,14 @@ section{position:relative;padding:140px clamp(24px,6vw,72px)}
 .hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--paper);animation:pulse 2.4s var(--ease) infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .hero h1{
-  font-size:clamp(4.5rem,16vw,13.5rem);font-weight:400;letter-spacing:-.04em;line-height:.92;
+  font-size:clamp(4.5rem,16vw,13.5rem);font-weight:300;letter-spacing:-.04em;line-height:.92;
   margin-left:-.05em;
+}
+.hero h1 .en{
+  font-family:var(--font-display);
+  font-size:clamp(1.9rem,5.4vw,4.9rem);
+  font-weight:300;font-style:italic;letter-spacing:.01em;line-height:1.1;
+  margin-left:.05em;
 }
 .hero h1 .reveal-line{display:block;overflow:hidden}
 .hero h1 .reveal-line > span{display:inline-block;transform:translateY(110%);animation:rise 1.1s var(--ease) forwards}
@@ -408,7 +418,7 @@ footer{
 
 <!-- 导航 -->
 <nav id="nav">
-  <a href="#home" class="logo"><span class="mark"></span>李默<span style="color:var(--slate)">.AI</span></a>
+  <a href="#home" class="logo"><span class="mark"></span>李烽立<span style="color:var(--slate)">.AI</span></a>
   <div class="nav-links" id="navLinks">
     <a href="#home" class="active">首页</a>
     <a href="#about">关于</a>
@@ -431,8 +441,8 @@ footer{
   <div class="hero-inner">
     <div class="hero-eyebrow"><span class="dot"></span> AI 产品经理 · 作品集 · ©2025</div>
     <h1>
-      <span class="reveal-line"><span>李默</span></span>
-      <span class="reveal-line"><span style="color:var(--ash)">产品经理</span></span>
+      <span class="reveal-line"><span>李烽立</span></span>
+      <span class="reveal-line"><span class="en" style="color:var(--ash)">AI Product Manager</span></span>
     </h1>
     <p class="hero-manifesto">让 AI 真正<br>落地生根</p>
     <p class="hero-desc">6 年产品经验，深耕大模型应用与智能体。把复杂的技术能力，翻译成用户真正需要的产品。</p>
@@ -458,7 +468,7 @@ footer{
     <div class="about-grid">
       <p class="about-lead reveal">我相信好的产品，是<em>技术与人性</em>之间的一座桥。</p>
       <div class="about-body reveal d1">
-        <p>你好，我是<strong>李默</strong>，一名专注于 AI 领域的产品经理。技术决定可能性，而产品决定它能否真正走进人们的生活。</p>
+        <p>你好，我是<strong>李烽立</strong>，一名专注于 AI 领域的产品经理。技术决定可能性，而产品决定它能否真正走进人们的生活。</p>
         <p>我的工作横跨<strong>大模型应用、智能体（Agent）、AIGC 与数据智能</strong>——从需求洞察、产品设计，到与算法团队协作调优，再到商业化落地，我乐于深入每一个环节。</p>
         <div class="tag-row">
           <span class="tag">大模型应用</span>
@@ -626,7 +636,7 @@ footer{
 <!-- Footer -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo">李默 . AI</div>
+    <div class="footer-logo">李烽立 . AI</div>
     <div class="footer-note">
       用产品思维，让 AI 落地生根<br>
       <span class="mono">© 2025 保留所有权利 · 设计参考 monopo saigon</span>
