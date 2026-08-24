@@ -1,757 +1,965 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>李烽立 · AI 产品经理</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   monopo saigon 设计系统 · 移植
-   液态虹彩 × 编辑式沉默
-   ============================================================ */
-:root{
-  /* 中性色（界面纪律：只有黑白灰） */
-  --obsidian:#000000;   /* 主背景 / 主文字 */
-  --inkstone:#181818;   /* 页脚 / 次级背景 */
-  --slate:#636363;      /* 填充按钮 */
-  --felt:#6d6d6d;       /* 辅助文字 */
-  --pewter:#808080;     /* hover 状态 */
-  --ash:#9a9a9a;        /* 禁用 / 低对比 */
-  --paper:#ffffff;      /* 深色上的文字 */
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FengLi / 李烽立，AI 产品经理。关注 AI，也关注 AI 背后的人。">
+  <meta name="theme-color" content="#F5FBFF">
+  <link rel="icon" href="data:,">
+  <title>FengLi / 李烽立 — AI 产品经理</title>
+  <style>
+    :root {
+      --page-bg: #F5FBFF;
+      --page-fg: #171717;
+      --orb-theme: 1;
+      --muted: color-mix(in srgb, var(--page-fg) 65%, transparent);
+      --hairline: color-mix(in srgb, var(--page-fg) 20%, transparent);
+      --pad: clamp(20px, 2.4vw, 38px);
+      --display: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
 
-  --hairline:rgba(255,255,255,.14);
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--page-bg); }
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow-x: clip;
+      background: var(--page-bg);
+      color: var(--page-fg);
+      font-family: var(--display);
+      font-size: 16px;
+      line-height: 1.45;
+      transition: none;
+    }
 
-  /* 形状：0 或 75px pill，无中间值 */
-  --r-none:0px;
-  --r-pill:75px;
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; font: inherit; }
+    a, button { touch-action: manipulation; }
+    a:active, button:active { opacity: .68; }
+    ::selection { color: #131313; background: #b7f0e6; }
+    :focus-visible { outline: 2px solid currentColor; outline-offset: 5px; }
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 12px;
+      left: 12px;
+      padding: 12px 16px;
+      background: var(--page-fg);
+      color: var(--page-bg);
+      transform: translateY(-160%);
+    }
+    .skip-link:focus { transform: translateY(0); }
 
-  /* 排版 */
-  --font-primary:"Cormorant Garamond","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Georgia,"Times New Roman",serif;
-  --font-display:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  --font-mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    .site-header {
+      position: fixed;
+      z-index: 60;
+      inset: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 78px;
+      padding: 0 var(--pad);
+      pointer-events: none;
+    }
+    .site-header > * { pointer-events: auto; }
+    .brand {
+      font-size: clamp(19px, 1.8vw, 28px);
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -.045em;
+      text-transform: uppercase;
+    }
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 
-  /* 动效：耐心、滑行 */
-  --ease:cubic-bezier(.19,1,.22,1);
-  --t-slow:1.25s;
-  --t-med:.8s;
+    .chapter-nav {
+      position: fixed;
+      z-index: 55;
+      top: 50%;
+      right: var(--pad);
+      display: grid;
+      justify-items: end;
+      gap: 13px;
+      transform: translateY(-50%);
+    }
+    .chapter-nav a {
+      position: relative;
+      display: grid;
+      place-items: center;
+      justify-self: end;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      font-size: 10px;
+      letter-spacing: .05em;
+      cursor: pointer;
+      transition: width .24s cubic-bezier(.22, 1, .36, 1) .34s;
+    }
+    .chapter-nav a::before {
+      position: absolute;
+      right: 18px;
+      width: 7px;
+      height: 7px;
+      border: 1px solid currentColor;
+      border-radius: 50%;
+      content: "";
+      opacity: 1;
+      transition: width .16s cubic-bezier(.22, 1, .36, 1) .34s, height .16s cubic-bezier(.22, 1, .36, 1) .34s, right .16s cubic-bezier(.22, 1, .36, 1) .34s, opacity .01s linear .33s, background-color .18s ease;
+    }
+    .chapter-nav a::after {
+      position: absolute;
+      right: 5px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      content: "";
+      opacity: 0;
+      transition: width .24s cubic-bezier(.22, 1, .36, 1) .10s, opacity .01s linear .34s, background-color .18s ease;
+    }
+    .chapter-nav .nav-label {
+      position: absolute;
+      z-index: 1;
+      right: 5px;
+      width: 122px;
+      height: 34px;
+      overflow: hidden;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+    .chapter-nav .nav-label-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transform: translateX(16px);
+      white-space: nowrap;
+      transition: opacity .10s ease, transform .14s cubic-bezier(.4, 0, 1, 1);
+    }
+    .chapter-nav .nav-index { font-variant-numeric: tabular-nums; }
+    .chapter-nav .nav-name { letter-spacing: .08em; }
+    .chapter-nav a:hover, .chapter-nav a:focus-visible {
+      width: 132px;
+      transition: width .28s cubic-bezier(.22, 1, .36, 1) .18s;
+    }
+    .chapter-nav a:hover::before, .chapter-nav a:focus-visible::before {
+      right: 5px;
+      width: 34px;
+      height: 34px;
+      opacity: 0;
+      transition: width .18s cubic-bezier(.22, 1, .36, 1), height .18s cubic-bezier(.22, 1, .36, 1), right .18s cubic-bezier(.22, 1, .36, 1), opacity .01s linear .18s, background-color .18s ease;
+    }
+    .chapter-nav a:hover::after, .chapter-nav a:focus-visible::after {
+      width: 122px;
+      opacity: 1;
+      transition: width .28s cubic-bezier(.22, 1, .36, 1) .18s, opacity .01s linear .18s, background-color .18s ease;
+    }
+    .chapter-nav a:hover .nav-label-content, .chapter-nav a:focus-visible .nav-label-content {
+      opacity: 1;
+      transform: none;
+      transition: opacity .18s ease .32s, transform .24s cubic-bezier(.22, 1, .36, 1) .27s;
+    }
+    .chapter-nav a[aria-current="true"]::before { right: 16px; width: 12px; height: 12px; background: currentColor; }
+    .chapter-nav a[aria-current="true"]::after { background: currentColor; }
+    .chapter-nav a[aria-current="true"]:hover::before, .chapter-nav a[aria-current="true"]:focus-visible::before { right: 5px; width: 34px; height: 34px; }
+    .chapter-nav a[aria-current="true"]:hover .nav-label, .chapter-nav a[aria-current="true"]:focus-visible .nav-label { color: var(--page-bg); }
 
-  --maxw:1078px;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  font-family:var(--font-primary);
-  font-weight:300;
-  background:var(--obsidian);
-  color:var(--paper);
-  line-height:1.5;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-  cursor:default;
-}
-::selection{background:var(--paper);color:var(--obsidian)}
-a{color:inherit;text-decoration:none}
-ul{list-style:none}
-img{max-width:100%;display:block}
-button{font-family:inherit;cursor:pointer;background:none;border:none;color:inherit}
+    .progress-track {
+      position: fixed;
+      z-index: 54;
+      top: 78px;
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      background: var(--hairline);
+    }
+    .progress-fill {
+      width: 100%;
+      height: 100%;
+      background: currentColor;
+      transform: scaleY(0);
+      transform-origin: top;
+      will-change: transform;
+    }
 
-::-webkit-scrollbar{width:9px}
-::-webkit-scrollbar-track{background:var(--obsidian)}
-::-webkit-scrollbar-thumb{background:var(--slate);border-radius:9px}
+    #orb-stage {
+      --orb-x: 70;
+      --orb-y: 52;
+      --orb-scale: 1;
+      position: fixed;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      width: min(78vmin, 880px);
+      height: min(78vmin, 880px);
+      transform: translate3d(calc(var(--orb-x) * 1vw - 50%), calc(var(--orb-y) * 1vh - 50%), 0) scale(var(--orb-scale));
+      transform-origin: center;
+      pointer-events: none;
+      will-change: transform;
+      contain: layout paint style;
+    }
+    #orb-shell { position: relative; width: 100%; height: 100%; }
+    #orb-stage, #orb-shell, #orb { background: transparent !important; }
+    #orb {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: transparent;
+    }
+    .orb-fallback {
+      position: absolute;
+      inset: 7%;
+      display: none;
+      overflow: hidden;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 34% 31%, rgba(255,255,255,.95) 0 5%, transparent 22%),
+        radial-gradient(circle at 68% 74%, rgba(255,255,255,.72), transparent 28%),
+        conic-gradient(from 210deg, #82d7ff, #9f72ff, #ff93cf, #ffd88f, #8be9d6, #82d7ff);
+      filter: saturate(1.08);
+      animation: fallback-drift 10s ease-in-out infinite alternate;
+    }
+    .orb-fallback::after {
+      position: absolute;
+      inset: -14%;
+      border-radius: 44% 56% 49% 51% / 58% 43% 57% 42%;
+      background: radial-gradient(circle at 42% 45%, rgba(255,255,255,.65), transparent 45%);
+      content: "";
+      filter: blur(22px);
+      animation: fallback-rotate 14s linear infinite;
+    }
+    .webgpu-fallback .orb-fallback { display: block; }
+    .webgpu-fallback #orb { visibility: hidden; }
+    @keyframes fallback-drift { to { transform: rotate(9deg) scale(.96); border-radius: 46% 54% 43% 57% / 52% 46% 54% 48%; } }
+    @keyframes fallback-rotate { to { transform: rotate(1turn); } }
 
-/* 噪点质感 */
-.grain{
-  position:fixed;inset:-50%;z-index:9990;pointer-events:none;opacity:.05;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain 8s steps(10) infinite;
-}
-@keyframes grain{
-  0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-8%)}
-  30%{transform:translate(3%,-4%)}50%{transform:translate(-3%,6%)}
-  70%{transform:translate(5%,2%)}90%{transform:translate(-2%,-5%)}
-}
+    .orb-hit {
+      position: absolute;
+      z-index: 3;
+      inset: 10%;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      pointer-events: auto;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .ripple {
+      position: absolute;
+      z-index: 4;
+      top: 50%;
+      left: 50%;
+      width: 72%;
+      height: 72%;
+      border: 1px solid rgba(255,255,255,.72);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(.35);
+      opacity: .9;
+      pointer-events: none;
+      animation: orb-ripple .9s cubic-bezier(.16, 1, .3, 1) forwards;
+    }
+    @keyframes orb-ripple { to { opacity: 0; transform: translate(-50%, -50%) scale(1.28); } }
 
-/* 自定义光标 */
-.cursor-dot,.cursor-ring{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;left:0;top:0}
-.cursor-dot{width:6px;height:6px;background:var(--paper);transform:translate(-50%,-50%)}
-.cursor-ring{
-  width:34px;height:34px;border:1px solid rgba(255,255,255,.5);
-  transform:translate(-50%,-50%);transition:width .4s var(--ease),height .4s var(--ease),background .4s var(--ease),border-color .4s var(--ease);
-}
-.cursor-ring.is-hover{width:56px;height:56px;background:rgba(255,255,255,.08);border-color:var(--paper)}
-@media (hover:none),(max-width:768px){.cursor-dot,.cursor-ring{display:none}}
+    #status {
+      position: fixed;
+      z-index: 70;
+      right: var(--pad);
+      bottom: 18px;
+      max-width: 260px;
+      color: var(--page-fg);
+      font-size: 11px;
+      opacity: .6;
+    }
+    #status[hidden] { display: none; }
 
-/* 滚动进度 */
-.scroll-progress{position:fixed;top:0;left:0;height:2px;width:0;z-index:1000;background:var(--paper)}
-.back-top{
-  position:fixed;right:24px;bottom:24px;z-index:900;width:50px;height:50px;
-  border-radius:var(--r-pill);border:1px solid var(--hairline);
-  background:var(--obsidian);color:var(--paper);font-size:20px;
-  display:grid;place-items:center;opacity:0;transform:translateY(20px);
-  transition:opacity .6s var(--ease),transform .6s var(--ease),background .6s var(--ease);
-}
-.back-top.show{opacity:1;transform:translateY(0)}
-.back-top:hover{background:var(--paper);color:var(--obsidian)}
+    main { position: relative; z-index: 3; pointer-events: none; }
+    .scene {
+      position: relative;
+      min-height: 190svh;
+      isolation: isolate;
+    }
+    .scene-frame {
+      position: sticky;
+      top: 0;
+      display: grid;
+      width: 100%;
+      height: 100svh;
+      padding: 96px var(--pad) 46px;
+      overflow: hidden;
+      opacity: var(--scene-opacity, 1);
+      transition: opacity .08s linear;
+      pointer-events: none;
+    }
+    .scene-frame::after {
+      position: absolute;
+      right: var(--pad);
+      bottom: 26px;
+      left: var(--pad);
+      height: 1px;
+      background: var(--hairline);
+      content: "";
+    }
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: .1em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .display-title {
+      margin: 0;
+      font-size: clamp(66px, 10.6vw, 162px);
+      font-weight: 400;
+      line-height: .79;
+      letter-spacing: -.068em;
+      text-transform: uppercase;
+    }
+    .display-title span { display: block; }
+    .body-copy { max-width: 520px; margin: 0; font-size: clamp(17px, 1.45vw, 22px); }
+    .quiet { color: var(--muted); }
+    [data-parallax] { will-change: transform; }
 
-/* ============================================================
-   导航
-   ============================================================ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:800;height:72px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 clamp(24px,5vw,64px);
-  transition:background .8s var(--ease);
-}
-nav.scrolled{background:rgba(0,0,0,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
-.logo{font-weight:300;font-size:1.15rem;letter-spacing:-.02em;display:flex;align-items:center;gap:8px}
-.logo .mark{width:9px;height:9px;border-radius:50%;background:var(--paper);display:inline-block}
-.nav-links{display:flex;gap:4px}
-.nav-links a{
-  padding:9px 16px;font-size:.88rem;color:var(--ash);border-radius:var(--r-none);
-  position:relative;transition:color .6s var(--ease);
-}
-.nav-links a:hover{color:var(--paper)}
-.nav-links a.active{color:var(--paper)}
-.nav-links a.active::after{
-  content:"";position:absolute;left:16px;right:16px;bottom:4px;height:1px;background:var(--paper);
-}
-.burger{display:none;flex-direction:column;gap:5px;padding:8px;z-index:810}
-.burger span{width:24px;height:1.5px;background:var(--paper);transition:.4s var(--ease)}
-@media (max-width:820px){
-  .burger{display:flex}
-  .nav-links{
-    position:fixed;top:72px;left:0;right:0;flex-direction:column;align-items:stretch;
-    background:rgba(0,0,0,.95);backdrop-filter:blur(18px);
-    padding:16px 20px 24px;border-bottom:1px solid var(--hairline);
-    transform:translateY(-120%);transition:transform .8s var(--ease);
-  }
-  .nav-links.open{transform:translateY(0)}
-  .nav-links a{padding:16px;border-bottom:1px solid var(--hairline)}
-  .nav-links a:last-child{border-bottom:none}
-}
+    .hero-frame { align-content: space-between; }
+    .hero-main { align-self: center; width: min(100%, 1240px); }
+    .hero-title { width: 100%; }
+    .hero-title .role-line:nth-child(2) { margin-left: 16vw; }
+    .hero-title .manifesto-line {
+      width: fit-content;
+      margin-top: clamp(16px, 1.8vw, 30px);
+      margin-left: 4vw;
+      font-size: .44em;
+      line-height: .92;
+      letter-spacing: -.035em;
+      text-transform: none;
+      white-space: nowrap;
+    }
+    .hero-thesis {
+      margin-top: clamp(18px, 2vw, 30px);
+      margin-left: clamp(260px, 29vw, 430px);
+    }
+    .hero-bottom {
+      display: block;
+    }
+    .hero-sincerity {
+      position: absolute;
+      z-index: 4;
+      bottom: 40px;
+      left: 50%;
+      margin: 0;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .12em;
+      transform: translateX(-50%);
+      white-space: nowrap;
+    }
+    .scroll-cue { display: flex; align-items: center; gap: 13px; }
+    .scroll-cue i { display: block; width: 52px; height: 1px; background: currentColor; }
 
-/* ============================================================
-   通用
-   ============================================================ */
-section{position:relative;padding:140px clamp(24px,6vw,72px)}
-.container{max-width:var(--maxw);margin:0 auto}
-.eyebrow{
-  display:flex;align-items:center;gap:14px;
-  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--ash);margin-bottom:36px;
-}
-.eyebrow .idx{color:var(--felt)}
-.eyebrow::before{content:"";width:36px;height:1px;background:var(--ash)}
-.section-title{
-  font-size:clamp(2.6rem,7vw,5.2rem);font-weight:300;letter-spacing:-.02em;
-  line-height:1.02;margin-bottom:28px;
-}
-.section-sub{color:var(--ash);font-size:1.05rem;max-width:520px;font-weight:300}
+    .human-frame { grid-template-columns: 1fr 1fr 1fr; align-items: center; gap: 34px; }
+    .human-side { max-width: 280px; }
+    .human-side:last-of-type { justify-self: end; text-align: right; }
+    .human-word {
+      position: absolute;
+      z-index: -1;
+      font-size: clamp(105px, 20vw, 310px);
+      font-weight: 400;
+      line-height: .72;
+      letter-spacing: -.08em;
+      opacity: .06;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+    .human-word.top { top: 9%; left: -2%; }
+    .human-word.bottom { right: -3%; bottom: 7%; }
+    .human-center-label { align-self: end; justify-self: center; padding-bottom: 56px; text-align: center; }
 
-/* 显现动画 */
-.reveal{opacity:0;transform:translateY(44px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
-.reveal.in{opacity:1;transform:translateY(0)}
-.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}
+    .about-frame { grid-template-columns: .84fr 1.16fr; align-items: center; gap: 8vw; }
+    .about-copy { grid-column: 2; display: grid; gap: 34px; max-width: 730px; }
+    .about-copy h2, .experience-copy h2, .work-copy h2, .contact-title {
+      margin: 0;
+      font-size: clamp(54px, 7.7vw, 118px);
+      font-weight: 400;
+      line-height: .84;
+      letter-spacing: -.062em;
+      text-transform: uppercase;
+    }
+    .about-index {
+      position: absolute;
+      top: 50%;
+      left: var(--pad);
+      font-size: clamp(100px, 17vw, 260px);
+      font-weight: 300;
+      line-height: 1;
+      opacity: .08;
+      transform: translateY(-50%);
+    }
 
-/* ============================================================
-   Hero · 液态虹彩
-   ============================================================ */
-.hero{
-  min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
-  position:relative;overflow:hidden;padding:120px clamp(24px,6vw,72px) 88px;
-}
-.hero-visual{position:absolute;inset:0;z-index:-1;background:var(--obsidian);overflow:hidden}
-.hero-visual .blob{
-  position:absolute;border-radius:50%;filter:blur(90px);
-  mix-blend-mode:screen;opacity:.65;will-change:transform;
-  animation:drift 24s var(--ease) infinite;
-}
-.hero-visual .b1{width:55vw;height:55vw;background:radial-gradient(circle,#7a1f2b 0%,transparent 70%);top:-18vw;left:-12vw}
-.hero-visual .b2{width:42vw;height:42vw;background:radial-gradient(circle,#5b21b6 0%,transparent 70%);top:6vw;right:-14vw;animation-delay:-5s}
-.hero-visual .b3{width:38vw;height:38vw;background:radial-gradient(circle,#0e7490 0%,transparent 70%);bottom:-12vw;left:18vw;animation-delay:-10s}
-.hero-visual .b4{width:30vw;height:30vw;background:radial-gradient(circle,#be185d 0%,transparent 70%);top:42%;left:42%;animation-delay:-15s}
-.hero-visual .b5{width:26vw;height:26vw;background:radial-gradient(circle,#a16207 0%,transparent 70%);top:-8vw;right:22vw;animation-delay:-7s}
-.hero-visual .b6{width:34vw;height:34vw;background:radial-gradient(circle,#1d4ed8 0%,transparent 70%);bottom:4vw;right:10vw;animation-delay:-19s}
-@keyframes drift{
-  0%,100%{transform:translate(0,0) scale(1)}
-  25%{transform:translate(6vw,-4vw) scale(1.12)}
-  50%{transform:translate(-4vw,5vw) scale(.94)}
-  75%{transform:translate(3vw,3vw) scale(1.06)}
-}
-/* 虹彩油膜光泽 */
-.hero-visual .sheen{
-  position:absolute;inset:-60%;
-  background:conic-gradient(from 0deg,
-    transparent 0deg,rgba(255,255,255,.05) 40deg,transparent 90deg,
-    rgba(45,212,191,.10) 140deg,transparent 200deg,
-    rgba(236,72,153,.10) 250deg,transparent 300deg,
-    rgba(250,204,21,.08) 340deg,transparent 360deg);
-  filter:blur(40px);mix-blend-mode:screen;
-  animation:spin 46s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.hero-visual .vignette{
-  position:absolute;inset:0;
-  background:radial-gradient(ellipse 120% 90% at 50% 40%,transparent 40%,rgba(0,0,0,.75) 100%);
-}
+    .experience-frame { grid-template-columns: 1.12fr .88fr; align-items: center; gap: 8vw; }
+    .experience-copy { max-width: 760px; }
+    .experience-list { display: grid; margin-top: 48px; border-top: 1px solid var(--hairline); }
+    .experience-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 20px;
+      align-items: baseline;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--hairline);
+    }
+    .experience-row strong { font-size: clamp(20px, 2vw, 31px); font-weight: 400; }
+    .experience-row small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; }
+    .experience-note { grid-column: 2; align-self: end; max-width: 300px; margin: 0 0 70px; }
 
-.hero-inner{max-width:var(--maxw);margin:0 auto;width:100%}
-.hero-eyebrow{
-  display:flex;align-items:center;gap:14px;
-  font-family:var(--font-mono);font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;
-  color:var(--paper);margin-bottom:34px;
-}
-.hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--paper);animation:pulse 2.4s var(--ease) infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.hero h1{
-  font-size:clamp(4.5rem,16vw,13.5rem);font-weight:300;letter-spacing:-.04em;line-height:.92;
-  margin-left:-.05em;
-}
-.hero h1 .en{
-  font-family:var(--font-display);
-  font-size:clamp(1.9rem,5.4vw,4.9rem);
-  font-weight:300;font-style:italic;letter-spacing:.01em;line-height:1.1;
-  margin-left:.05em;
-}
-.hero h1 .reveal-line{display:block;overflow:hidden}
-.hero h1 .reveal-line > span{display:inline-block;transform:translateY(110%);animation:rise 1.1s var(--ease) forwards}
-.hero h1 .reveal-line:nth-child(2) > span{animation-delay:.14s}
-@keyframes rise{to{transform:translateY(0)}}
-.hero-manifesto{
-  margin-top:40px;font-size:clamp(1.6rem,3.6vw,2.7rem);font-weight:300;
-  line-height:1.25;color:var(--paper);max-width:18em;
-}
-.hero-desc{
-  margin-top:32px;max-width:460px;color:var(--ash);font-size:1rem;font-weight:300;line-height:1.8;
-}
-.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:48px}
-.btn{
-  display:inline-flex;align-items:center;gap:12px;padding:17px 34px;
-  border-radius:var(--r-pill);font-size:.95rem;font-weight:400;
-  border:1px solid transparent;transition:all .8s var(--ease);white-space:nowrap;
-}
-.btn .arr{transition:transform .8s var(--ease)}
-.btn:hover .arr{transform:translateX(6px)}
-.btn-solid{background:var(--paper);color:var(--obsidian)}
-.btn-solid:hover{background:var(--ash);color:var(--obsidian)}
-.btn-outline{border-color:var(--hairline);color:var(--paper)}
-.btn-outline:hover{background:var(--paper);color:var(--obsidian);border-color:var(--paper)}
-.hero-meta{
-  display:flex;flex-wrap:wrap;gap:0;margin-top:72px;
-  border-top:1px solid var(--hairline);
-}
-.meta-item{flex:1;min-width:140px;padding:26px 20px 0 0}
-.meta-item .num{font-family:var(--font-display);font-size:clamp(1.9rem,3.5vw,3rem);font-weight:300;letter-spacing:-.02em}
-.meta-item .label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ash);margin-top:8px}
-.scroll-hint{
-  position:absolute;bottom:36px;right:clamp(24px,6vw,72px);
-  display:flex;align-items:center;gap:12px;color:var(--ash);
-  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;
-}
-.scroll-hint .line{width:1px;height:40px;background:var(--hairline);position:relative;overflow:hidden}
-.scroll-hint .line::after{
-  content:"";position:absolute;top:-40%;left:0;width:100%;height:40%;background:var(--paper);
-  animation:drop 2s var(--ease) infinite;
-}
-@keyframes drop{to{top:120%}}
+    .work-frame { grid-template-columns: .78fr 1.22fr; align-items: center; gap: 8vw; }
+    .work-copy { grid-column: 2; }
+    .work-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 36px; }
+    .work-card {
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+      border: 1px solid var(--hairline);
+      background: color-mix(in srgb, var(--page-bg) 72%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .work-card h3 { margin: 0; font-size: clamp(23px, 2.7vw, 40px); font-weight: 400; line-height: .95; text-transform: uppercase; }
+    .work-card footer { display: flex; justify-content: space-between; gap: 16px; font-size: 10px; letter-spacing: .07em; text-transform: uppercase; }
 
-/* ============================================================
-   About
-   ============================================================ */
-.about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:80px;align-items:start}
-.about-lead{font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:300;line-height:1.35;letter-spacing:-.01em}
-.about-lead em{font-style:normal;color:var(--ash)}
-.about-body{color:var(--ash);font-size:1rem;font-weight:300;line-height:1.9}
-.about-body p{margin-bottom:20px}
-.about-body strong{color:var(--paper);font-weight:400}
-.tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
-.tag{
-  font-family:var(--font-mono);font-size:.72rem;letter-spacing:.06em;
-  padding:8px 20px;border-radius:var(--r-pill);border:1px solid var(--hairline);color:var(--ash);
-  transition:all .8s var(--ease);
-}
-.tag:hover{color:var(--paper);border-color:var(--paper)}
-.facts{margin-top:56px;border-top:1px solid var(--hairline)}
-.fact-row{display:grid;grid-template-columns:1fr 1.5fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--hairline);align-items:baseline}
-.fact-row .k{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--felt)}
-.fact-row .v{font-size:1rem;font-weight:300;color:var(--paper);text-align:right}
-.fact-row .v.muted{color:var(--ash)}
+    .contact-frame { place-items: center; text-align: center; }
+    .contact-inner { display: grid; justify-items: center; gap: 34px; max-width: 1180px; }
+    .contact-title { font-size: clamp(62px, 10vw, 150px); }
+    .contact-foot {
+      position: absolute;
+      right: var(--pad);
+      bottom: 52px;
+      left: var(--pad);
+      display: flex;
+      justify-content: space-between;
+      gap: 30px;
+      font-size: 11px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
 
-/* ============================================================
-   能力
-   ============================================================ */
-.caps-list{border-top:1px solid var(--hairline)}
-.cap-row{
-  display:grid;grid-template-columns:80px 1fr 1.3fr;gap:28px;align-items:baseline;
-  padding:34px 0;border-bottom:1px solid var(--hairline);
-  transition:padding .8s var(--ease);
-}
-.cap-row:hover{padding-left:18px}
-.cap-row .no{font-family:var(--font-mono);font-size:.8rem;color:var(--felt)}
-.cap-row h3{font-size:clamp(1.4rem,2.8vw,2rem);font-weight:300;letter-spacing:-.01em}
-.cap-row p{color:var(--ash);font-size:.92rem;font-weight:300;line-height:1.7;max-width:420px;justify-self:end}
-.cap-row .pct{font-family:var(--font-display);color:var(--ash);font-size:1rem}
-@media (max-width:700px){
-  .cap-row{grid-template-columns:48px 1fr;grid-template-rows:auto auto;row-gap:10px}
-  .cap-row p{grid-column:2;justify-self:start}
-}
+    @media (max-width: 760px) {
+      .site-header { height: 66px; }
+      .header-meta span:last-child { display: none; }
+      .chapter-nav {
+        top: auto;
+        right: 12px;
+        bottom: 10px;
+        left: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 2px;
+        padding: 3px;
+        border: 1px solid var(--hairline);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--page-bg) 70%, transparent);
+        backdrop-filter: blur(14px);
+        transform: none;
+      }
+      .chapter-nav a, .chapter-nav a:hover, .chapter-nav a:focus-visible { width: 44px; height: 44px; }
+      .chapter-nav .nav-label { position: static; width: 100%; height: auto; overflow: visible; }
+      .chapter-nav .nav-label-content { gap: 0; opacity: 1; transform: none; font-size: 9px; }
+      .chapter-nav .nav-name { display: none; }
+      .chapter-nav a::before, .chapter-nav a::after { display: none; }
+      .chapter-nav a[aria-current="true"] { color: var(--page-bg); background: var(--page-fg); }
+      .progress-track { top: 66px; }
+      #orb-stage { width: min(112vw, 560px); height: min(112vw, 560px); }
+      .scene { min-height: 170svh; }
+      .scene-frame { padding: 86px 18px 82px; }
+      .scene-frame::after { right: 18px; bottom: 72px; left: 18px; }
+      .display-title { font-size: clamp(54px, 16.5vw, 76px); line-height: .86; }
+      .hero-title .role-line:nth-child(2), .hero-title .manifesto-line { margin-left: 0; }
+      .hero-title .manifesto-line {
+        margin-top: 18px;
+        font-size: clamp(19px, 6vw, 30px);
+        line-height: 1;
+        letter-spacing: -.03em;
+      }
+      .hero-thesis { max-width: 300px; margin-top: 18px; margin-left: 14vw; font-size: 16px; }
+      .hero-sincerity { bottom: 116px; font-size: 10px; }
+      .human-frame { grid-template-columns: 1fr 1fr; align-content: center; }
+      .human-side { font-size: 14px; }
+      .human-center-label { position: absolute; right: 18px; bottom: 82px; padding: 0; }
+      .human-word { font-size: 39vw; }
+      .about-frame, .experience-frame, .work-frame { grid-template-columns: 1fr; align-content: center; }
+      .about-copy, .work-copy { grid-column: 1; margin-top: -10svh; }
+      .about-copy h2, .experience-copy h2, .work-copy h2 { font-size: clamp(50px, 15vw, 70px); }
+      .about-copy .body-copy { max-width: 330px; margin-left: auto; }
+      .about-index { top: auto; bottom: 76px; left: 18px; font-size: 42vw; transform: none; }
+      .experience-note { display: none; }
+      .experience-list { margin-top: 34px; }
+      .experience-row { grid-template-columns: 32px 1fr; gap: 10px; }
+      .experience-row small:last-child { grid-column: 2; }
+      .work-grid { grid-template-columns: 1fr; }
+      .work-card { min-height: 138px; }
+      .contact-title { font-size: clamp(54px, 16vw, 74px); }
+      .contact-foot { bottom: 78px; align-items: flex-start; flex-direction: column; gap: 8px; text-align: left; }
+      #status { right: 18px; bottom: 66px; max-width: 210px; }
+    }
 
-/* ============================================================
-   经历
-   ============================================================ */
-.timeline{position:relative;max-width:820px}
-.timeline::before{content:"";position:absolute;left:4px;top:10px;bottom:10px;width:1px;background:var(--hairline)}
-.tl-item{position:relative;padding:0 0 64px 48px}
-.tl-item::before{
-  content:"";position:absolute;left:0;top:8px;width:9px;height:9px;border-radius:50%;
-  background:var(--obsidian);border:1px solid var(--paper);
-  transition:background .6s var(--ease),transform .6s var(--ease);
-}
-.tl-item:hover::before{background:var(--paper);transform:scale(1.4)}
-.tl-date{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.14em;color:var(--felt);margin-bottom:14px}
-.tl-item h3{font-size:clamp(1.5rem,3vw,2.1rem);font-weight:300;letter-spacing:-.01em;margin-bottom:6px}
-.tl-item .role{font-size:.9rem;color:var(--ash);font-weight:300;margin-bottom:16px}
-.tl-item p{color:var(--ash);font-size:.95rem;font-weight:300;line-height:1.85;max-width:560px}
-.tl-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.tl-tags span{
-  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;
-  padding:6px 16px;border-radius:var(--r-pill);border:1px solid var(--hairline);color:var(--ash);
-}
-
-/* ============================================================
-   项目
-   ============================================================ */
-.projects-grid{display:grid;grid-template-columns:1fr;gap:0;border-top:1px solid var(--hairline)}
-.project-card{
-  display:grid;grid-template-columns:1fr 1.4fr;border-bottom:1px solid var(--hairline);
-  position:relative;overflow:hidden;transition:background .8s var(--ease),color .8s var(--ease);
-}
-.project-thumb{
-  height:340px;position:relative;display:grid;place-items:center;overflow:hidden;
-  background:var(--inkstone);border-right:1px solid var(--hairline);
-  transition:background .8s var(--ease);
-}
-.project-thumb .no{
-  font-family:var(--font-display);font-size:clamp(5rem,10vw,9rem);font-weight:300;
-  color:var(--slate);line-height:1;transition:color .8s var(--ease),transform .8s var(--ease);
-}
-.project-body{padding:44px 48px;display:flex;flex-direction:column;justify-content:center;align-self:stretch}
-.project-body h3{
-  font-size:clamp(1.7rem,3.4vw,2.6rem);font-weight:300;letter-spacing:-.01em;
-  display:flex;align-items:baseline;gap:14px;margin-bottom:18px;transition:color .8s var(--ease);
-}
-.project-body h3 .arrow{font-size:1.2rem;opacity:0;transform:translateX(-10px);transition:all .8s var(--ease)}
-.project-body p{color:var(--ash);font-size:.95rem;font-weight:300;line-height:1.8;max-width:460px;margin-bottom:24px;transition:color .8s var(--ease)}
-.project-tags{display:flex;flex-wrap:wrap;gap:8px}
-.project-tags span{
-  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;
-  padding:6px 16px;border-radius:var(--r-pill);border:1px solid var(--hairline);color:var(--ash);
-  transition:all .8s var(--ease);
-}
-/* 黑白反转 hover */
-.project-card:hover{background:var(--paper)}
-.project-card:hover .project-thumb{background:var(--paper)}
-.project-card:hover .project-thumb .no{color:var(--obsidian);transform:scale(1.08)}
-.project-card:hover .project-body h3{color:var(--obsidian)}
-.project-card:hover .project-body h3 .arrow{opacity:1;transform:translateX(0);color:var(--obsidian)}
-.project-card:hover .project-body p{color:var(--slate)}
-.project-card:hover .project-tags span{color:var(--obsidian);border-color:var(--obsidian)}
-@media (max-width:760px){
-  .project-card{grid-template-columns:1fr}
-  .project-thumb{height:220px;border-right:none;border-bottom:1px solid var(--hairline)}
-  .project-body{padding:32px 24px}
-}
-
-/* ============================================================
-   联系
-   ============================================================ */
-.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:80px;align-items:start}
-.contact-lead{font-size:clamp(1.8rem,3.8vw,2.9rem);font-weight:300;line-height:1.3;letter-spacing:-.01em}
-.contact-lead .dim{color:var(--ash)}
-.contact-list{margin-top:40px;display:flex;flex-direction:column}
-.contact-list li{
-  display:flex;justify-content:space-between;align-items:baseline;gap:20px;
-  padding:18px 0;border-bottom:1px solid var(--hairline);
-}
-.contact-list .k{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--felt)}
-.contact-list .v{font-size:1rem;font-weight:300;color:var(--paper)}
-.contact-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
-.form-group{margin-bottom:26px}
-.form-group label{
-  display:block;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.16em;
-  text-transform:uppercase;color:var(--felt);margin-bottom:12px;
-}
-.form-group input,.form-group textarea{
-  width:100%;padding:14px 0;font-size:1rem;font-family:inherit;color:var(--paper);
-  background:transparent;border:none;border-bottom:1px solid var(--hairline);
-  border-radius:var(--r-none);transition:border-color .8s var(--ease);resize:vertical;
-}
-.form-group input::placeholder,.form-group textarea::placeholder{color:var(--slate)}
-.form-group input:focus,.form-group textarea:focus{
-  outline:none;border-bottom-color:var(--paper);
-}
-.form-msg{font-size:.85rem;margin-top:16px;min-height:1.4em;color:var(--ash);font-weight:300}
-
-/* ============================================================
-   页脚
-   ============================================================ */
-footer{
-  background:var(--inkstone);border-top:1px solid var(--hairline);
-  padding:64px clamp(24px,6vw,72px) 40px;
-}
-.footer-inner{max-width:var(--maxw);margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
-.footer-logo{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:300;letter-spacing:-.02em}
-.footer-note{color:var(--felt);font-size:.8rem;font-weight:300;text-align:right;line-height:1.8}
-.footer-note .mono{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;color:var(--slate)}
-</style>
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
+      [data-parallax] { transform: none !important; }
+    }
+  </style>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+  <header class="site-header">
+    <a class="brand" href="#intro" aria-label="返回首页">FengLi / 李烽立</a>
+    <div class="header-meta"><i class="live-dot" aria-hidden="true"></i><span>AI Product Manager</span><span>Personal Site 4.0</span></div>
+  </header>
 
-<div class="grain"></div>
-<div class="cursor-dot" id="cursorDot"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-<div class="scroll-progress" id="scrollProgress"></div>
-<button class="back-top" id="backTop" aria-label="返回顶部">↑</button>
+  <aside class="chapter-nav" aria-label="章节导航">
+    <a href="#intro" aria-label="前往首页" aria-current="true"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">00</span><span class="nav-name">首页</span></span></span></a>
+    <a href="#human" aria-label="前往产品观"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">01</span><span class="nav-name">产品观</span></span></span></a>
+    <a href="#about" aria-label="前往个人介绍"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">02</span><span class="nav-name">个人介绍</span></span></span></a>
+    <a href="#experience" aria-label="前往工作经历"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">03</span><span class="nav-name">工作经历</span></span></span></a>
+    <a href="#work" aria-label="前往我的作品"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">04</span><span class="nav-name">我的作品</span></span></span></a>
+    <a href="#contact" aria-label="前往联系方式"><span class="nav-label"><span class="nav-label-content"><span class="nav-index">05</span><span class="nav-name">联系方式</span></span></span></a>
+  </aside>
+  <div class="progress-track" aria-hidden="true"><div class="progress-fill"></div></div>
 
-<!-- 导航 -->
-<nav id="nav">
-  <a href="#home" class="logo"><span class="mark"></span>李烽立<span style="color:var(--slate)">.AI</span></a>
-  <div class="nav-links" id="navLinks">
-    <a href="#home" class="active">首页</a>
-    <a href="#about">关于</a>
-    <a href="#skills">能力</a>
-    <a href="#experience">经历</a>
-    <a href="#projects">项目</a>
-    <a href="#contact">联系</a>
-  </div>
-  <button class="burger" id="burger" aria-label="菜单"><span></span><span></span><span></span></button>
-</nav>
-
-<!-- Hero -->
-<section class="hero" id="home">
-  <div class="hero-visual">
-    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-    <div class="blob b4"></div><div class="blob b5"></div><div class="blob b6"></div>
-    <div class="sheen"></div>
-    <div class="vignette"></div>
-  </div>
-  <div class="hero-inner">
-    <div class="hero-eyebrow"><span class="dot"></span> AI 产品经理 · 作品集 · ©2025</div>
-    <h1>
-      <span class="reveal-line"><span>李烽立</span></span>
-      <span class="reveal-line"><span class="en" style="color:var(--ash)">AI Product Manager</span></span>
-    </h1>
-    <p class="hero-manifesto">让 AI 真正<br>落地生根</p>
-    <p class="hero-desc">6 年产品经验，深耕大模型应用与智能体。把复杂的技术能力，翻译成用户真正需要的产品。</p>
-    <div class="hero-cta">
-      <a href="#projects" class="btn btn-solid">查看项目 <span class="arr">→</span></a>
-      <a href="#contact" class="btn btn-outline">联系我</a>
-    </div>
-    <div class="hero-meta">
-      <div class="meta-item"><div class="num" data-count="6">0</div><div class="label">年产品经验</div></div>
-      <div class="meta-item"><div class="num" data-count="12">0</div><div class="label">款上线产品</div></div>
-      <div class="meta-item"><div class="num" data-count="300" data-suffix="万+">0</div><div class="label">累计用户</div></div>
-      <div class="meta-item"><div class="num" data-count="8">0</div><div class="label">技术专利</div></div>
+  <div id="orb-stage">
+    <div id="orb-shell">
+      <canvas id="orb" aria-label="持续流动的透明液态玻璃球"></canvas>
+      <div class="orb-fallback" aria-hidden="true"></div>
+      <button class="orb-hit" type="button" aria-label="触碰液态玻璃球"></button>
     </div>
   </div>
-  <div class="scroll-hint"><span>Scroll</span><div class="line"></div></div>
-</section>
+  <div id="status" role="status" hidden></div>
 
-<!-- About -->
-<section id="about">
-  <div class="container">
-    <div class="eyebrow reveal"><span class="idx">01</span> About</div>
-    <h2 class="section-title reveal">关于我</h2>
-    <div class="about-grid">
-      <p class="about-lead reveal">我相信好的产品，是<em>技术与人性</em>之间的一座桥。</p>
-      <div class="about-body reveal d1">
-        <p>你好，我是<strong>李烽立</strong>，一名专注于 AI 领域的产品经理。技术决定可能性，而产品决定它能否真正走进人们的生活。</p>
-        <p>我的工作横跨<strong>大模型应用、智能体（Agent）、AIGC 与数据智能</strong>——从需求洞察、产品设计，到与算法团队协作调优，再到商业化落地，我乐于深入每一个环节。</p>
-        <div class="tag-row">
-          <span class="tag">大模型应用</span>
-          <span class="tag">智能体 Agent</span>
-          <span class="tag">AIGC</span>
-          <span class="tag">产品策略</span>
-          <span class="tag">用户增长</span>
-          <span class="tag">商业化</span>
+  <main id="main-content">
+    <section class="scene" id="intro" aria-labelledby="intro-title">
+      <div class="scene-frame hero-frame">
+        <span class="eyebrow" data-parallax="-14">00 / INTRO — FENGLI</span>
+        <div class="hero-main" data-parallax="22">
+          <h1 class="display-title hero-title" id="intro-title">
+            <span class="role-line">AI Product</span>
+            <span class="role-line">Manager</span>
+            <span class="manifesto-line">「Solving Practical Needs」</span>
+          </h1>
+          <p class="body-copy hero-thesis">关注 AI，也关注 AI 背后的人。</p>
         </div>
+        <div class="hero-bottom">
+          <div class="scroll-cue eyebrow"><i></i><span>Scroll to enter</span></div>
+        </div>
+        <p class="hero-sincerity">永远真诚</p>
       </div>
-    </div>
-    <div class="facts reveal">
-      <div class="fact-row"><span class="k">坐标</span><span class="v">北京 / 杭州</span></div>
-      <div class="fact-row"><span class="k">邮箱</span><span class="v">limo.ai@example.com</span></div>
-      <div class="fact-row"><span class="k">状态</span><span class="v">开放合作</span></div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Skills -->
-<section id="skills">
-  <div class="container">
-    <div class="eyebrow reveal"><span class="idx">02</span> Capabilities</div>
-    <h2 class="section-title reveal">能力</h2>
-    <div class="caps-list reveal d1">
-      <div class="cap-row"><span class="no">01</span><h3>大模型应用设计</h3><p>Prompt 工程 / RAG / 模型选型与评估</p></div>
-      <div class="cap-row"><span class="no">02</span><h3>智能体 &amp; Agent</h3><p>多智能体协作 / 工具调用 / 工作流编排</p></div>
-      <div class="cap-row"><span class="no">03</span><h3>产品设计与原型</h3><p>Figma / 交互设计 / 高保真原型</p></div>
-      <div class="cap-row"><span class="no">04</span><h3>数据分析</h3><p>SQL / 埋点 / 增长实验与归因</p></div>
-      <div class="cap-row"><span class="no">05</span><h3>技术理解</h3><p>LLM 原理 / API 集成 / Python 基础</p></div>
-      <div class="cap-row"><span class="no">06</span><h3>商业化与增长</h3><p>定价策略 / 增长黑客 / PMF 验证</p></div>
-    </div>
-  </div>
-</section>
+    <section class="scene" id="human" aria-labelledby="human-title">
+      <div class="scene-frame human-frame">
+        <div class="human-word top" aria-hidden="true" data-parallax="-34">AI</div>
+        <div class="human-word bottom" aria-hidden="true" data-parallax="28">HUMAN</div>
+        <div class="human-side" data-parallax="-20">
+          <span class="eyebrow">01 / THE QUESTION</span>
+          <p class="body-copy">AI 能做什么，<br>只是问题的一半。</p>
+        </div>
+        <h2 id="human-title" class="eyebrow human-center-label">The human side<br>of intelligence</h2>
+        <div class="human-side" data-parallax="24">
+          <span class="eyebrow">THE OTHER HALF</span>
+          <p class="body-copy">另一半是：<br>它为谁而做。</p>
+        </div>
+      </div>
+    </section>
 
-<!-- Experience -->
-<section id="experience">
-  <div class="container">
-    <div class="eyebrow reveal"><span class="idx">03</span> Experience</div>
-    <h2 class="section-title reveal">经历</h2>
-    <div class="timeline">
-      <div class="tl-item reveal">
-        <div class="tl-date">2023 — 至今</div>
-        <h3>高级 AI 产品经理</h3>
-        <div class="role">某头部互联网公司 · 大模型应用方向</div>
-        <p>负责企业级智能体平台的产品规划与落地，主导多智能体协作框架设计，上线 3 个月服务 200+ 企业客户，续费率 92%。</p>
-        <div class="tl-tags"><span>智能体平台</span><span>B 端 SaaS</span><span>多 Agent 协作</span></div>
+    <section class="scene" id="about" aria-labelledby="about-title">
+      <div class="scene-frame about-frame">
+        <div class="about-index" aria-hidden="true" data-parallax="-30">02</div>
+        <div class="about-copy">
+          <span class="eyebrow">02 / ABOUT</span>
+          <h2 id="about-title" data-parallax="18">FengLi.<br>李烽立。</h2>
+          <p class="body-copy">AI 产品经理。这是一个介绍自己，并集中展示个人内容与部分作品的地方。比起堆满标签，我更愿意先留下最重要的一句：永远真诚。</p>
+        </div>
       </div>
-      <div class="tl-item reveal">
-        <div class="tl-date">2020 — 2023</div>
-        <h3>产品负责人</h3>
-        <div class="role">某 AI 创业公司 · AIGC 方向</div>
-        <p>从 0 到 1 打造 AI 内容创作工具，主导产品定位与冷启动策略，实现用户 0 → 300 万，获两轮融资。</p>
-        <div class="tl-tags"><span>AIGC</span><span>从 0 到 1</span><span>用户增长</span></div>
-      </div>
-      <div class="tl-item reveal">
-        <div class="tl-date">2018 — 2020</div>
-        <h3>产品经理</h3>
-        <div class="role">某一线大厂 · 数据智能方向</div>
-        <p>负责数据中台产品，搭建用户画像与智能推荐体系，支撑核心业务转化率提升 35%。</p>
-        <div class="tl-tags"><span>数据中台</span><span>推荐系统</span><span>用户画像</span></div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Projects -->
-<section id="projects">
-  <div class="container">
-    <div class="eyebrow reveal"><span class="idx">04</span> Projects</div>
-    <h2 class="section-title reveal">精选项目</h2>
-    <div class="projects-grid">
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">01</span></div>
-        <div class="project-body">
-          <h3>AgentFlow 智能体平台 <span class="arrow">→</span></h3>
-          <p>面向企业的一站式智能体构建平台，支持多智能体编排、知识库挂载与可视化调试。</p>
-          <div class="project-tags"><span>LLM</span><span>Agent</span><span>SaaS</span></div>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">02</span></div>
-        <div class="project-body">
-          <h3>灵墨 AI 写作助手 <span class="arrow">→</span></h3>
-          <p>AIGC 内容创作工具，覆盖公众号、小红书、营销文案等场景，日均生成内容 50 万+ 篇。</p>
-          <div class="project-tags"><span>AIGC</span><span>NLP</span><span>C 端产品</span></div>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">03</span></div>
-        <div class="project-body">
-          <h3>知问 AI 搜索 <span class="arrow">→</span></h3>
-          <p>基于 RAG 的智能问答与知识检索产品，让企业私域知识「即问即答」，准确率行业领先。</p>
-          <div class="project-tags"><span>RAG</span><span>知识库</span><span>搜索</span></div>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">04</span></div>
-        <div class="project-body">
-          <h3>声刻 AI 语音助手 <span class="arrow">→</span></h3>
-          <p>多模态实时语音对话产品，支持语音克隆与情感识别，打造自然流畅的人机交互体验。</p>
-          <div class="project-tags"><span>语音</span><span>多模态</span><span>实时交互</span></div>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">05</span></div>
-        <div class="project-body">
-          <h3>智策数据中台 <span class="arrow">→</span></h3>
-          <p>一站式数据智能平台，融合画像、推荐与归因分析，赋能业务精细化运营与决策。</p>
-          <div class="project-tags"><span>数据</span><span>推荐</span><span>增长</span></div>
-        </div>
-      </div>
-      <div class="project-card reveal">
-        <div class="project-thumb"><span class="no">06</span></div>
-        <div class="project-body">
-          <h3>PromptLab 提示词工坊 <span class="arrow">→</span></h3>
-          <p>提示词调试、评测与版本管理工具，帮助团队高效迭代 Prompt，提升模型输出质量。</p>
-          <div class="project-tags"><span>Prompt</span><span>评测</span><span>效率工具</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Contact -->
-<section id="contact">
-  <div class="container">
-    <div class="eyebrow reveal"><span class="idx">05</span> Contact</div>
-    <div class="contact-grid">
-      <div>
-        <h2 class="section-title reveal" style="margin-bottom:0">保持<br>联系</h2>
-        <p class="contact-lead reveal d1" style="margin-top:20px">有想法、有合作机会，或只是想聊聊 AI 产品，<span class="dim">都欢迎找我。</span></p>
-        <ul class="contact-list reveal d2">
-          <li><span class="k">邮箱</span><span class="v">limo.ai@example.com</span></li>
-          <li><span class="k">微信</span><span class="v">limo_ai_pm</span></li>
-          <li><span class="k">坐标</span><span class="v">北京 · 杭州</span></li>
-        </ul>
-      </div>
-      <form class="contact-form reveal d1" id="contactForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">你的称呼</label>
-            <input type="text" id="name" placeholder="怎么称呼你？" required>
-          </div>
-          <div class="form-group">
-            <label for="email">联系方式</label>
-            <input type="text" id="email" placeholder="邮箱 / 微信" required>
+    <section class="scene" id="experience" aria-labelledby="experience-title">
+      <div class="scene-frame experience-frame">
+        <div class="experience-copy">
+          <span class="eyebrow">03 / PAST EXPERIENCE</span>
+          <h2 id="experience-title" data-parallax="14">A Short<br>History.</h2>
+          <div class="experience-list">
+            <div class="experience-row"><small>01</small><strong>过往经历简介</strong><small>待补充</small></div>
+            <div class="experience-row"><small>02</small><strong>擅长领域与能力</strong><small>待补充</small></div>
+            <div class="experience-row"><small>03</small><strong>个人观点与职业主张</strong><small>持续整理</small></div>
           </div>
         </div>
-        <div class="form-group">
-          <label for="subject">主题</label>
-          <input type="text" id="subject" placeholder="想聊点什么？">
+        <p class="body-copy experience-note quiet">这里不会被做成一份冗长简历。只保留经过确认、能被真实经历支撑的内容。</p>
+      </div>
+    </section>
+
+    <section class="scene" id="work" aria-labelledby="work-title">
+      <div class="scene-frame work-frame">
+        <div class="work-copy">
+          <span class="eyebrow">04 / SELECTED WORK</span>
+          <h2 id="work-title" data-parallax="16">Work In<br>Progress.</h2>
+          <div class="work-grid">
+            <article class="work-card"><h3>Personal<br>Content</h3><footer><span>内容归档</span><span>待补充</span></footer></article>
+            <article class="work-card"><h3>Selected<br>Projects</h3><footer><span>代表作品</span><span>待补充</span></footer></article>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="message">内容</label>
-          <textarea id="message" rows="4" placeholder="写下你想说的话……" required></textarea>
+      </div>
+    </section>
+
+    <section class="scene" id="contact" aria-labelledby="contact-title">
+      <div class="scene-frame contact-frame">
+        <div class="contact-inner">
+          <span class="eyebrow">05 / THE NEXT CONVERSATION</span>
+          <h2 class="contact-title" id="contact-title" data-parallax="12">AI +<br>People.</h2>
+          <p class="body-copy">联系方式将在后续版本补充。<br><span class="quiet">当前不虚构邮箱，也不放无效入口。</span></p>
         </div>
-        <button type="submit" class="btn btn-solid" style="margin-top:8px">发送消息 <span class="arr">→</span></button>
-        <div class="form-msg" id="formMsg"></div>
-      </form>
-    </div>
-  </div>
-</section>
+        <footer class="contact-foot"><span>FengLi / 李烽立</span><span>AI Product Manager</span><span>Always sincere / 2026</span></footer>
+      </div>
+    </section>
+  </main>
+  <script type="module">
+    const shaderSource = "// Glass Liquid — curated flow programs with an optional glass shell.\n//\n// The local presets use independent spatial models for Siri-like sheets,\n// symmetric colour waves, aurora curtains, frost flow, neural interference,\n// liquid chrome, opal interference, a voice membrane, a blue liquid drop, and\n// a violet molten core, plus a chromatic brushed-metal field. The legacy liquid\n// bank remains below for compatibility with older shared shader\n// code, but is not exposed as an editor preset.\n//\n// When enabled, the shell uses a signed-distance refraction profile around the\n// boundary, asymmetric spectral separation, and two directional edge lights.\n// The fluid is resampled through that profile, so glass changes the image rather\n// than covering it with a translucent white face.\n//\n// ---------------------------------------------------------------------------\n// Analytic optical diffusion without a convolution.\n// ---------------------------------------------------------------------------\n//\n// The source used a thirteen-tap 5px frost blur. This port keeps one fluid\n// evaluation and applies the equivalent gaussian in the frequency domain:\n//\n//  1. **Per-octave attenuation, inside `lqFbm`.** Convolving with a gaussian of\n//     sigma σ scales a component at wavenumber k by exp(-k²σ²/2). An fbm's\n//     octaves have known wavenumbers — octave i sits at 2.03^i times the base —\n//     so each octave's amplitude is scaled by its own factor and the field is\n//     sampled once. The mean is untouched (a blur preserves it), so only the\n//     deviation from 0.5 is scaled and the `s / m` normaliser is unchanged.\n//     Every caller passes the diffusion sigma in its own input units, so detail\n//     attenuation continues to track `zoom`.\n//\n//  2. **Value-space quadrature at every pointwise nonlinearity.** This is the\n//     part that is easy to get wrong. `blur(ridge(f))` is not `ridge(blur(f))`:\n//     attenuating first and ridging after leaves filaments thin and hard where\n//     the blur should have spread them, which is exactly how the earlier\n//     analytic-edge version failed. So `lqFbm` also returns the standard\n//     deviation of the detail the attenuation removed — within a gaussian\n//     window an octave scaled by β contributes variance ∝ (1 - β²), NOT\n//     (1 - β)² — and every nonlinearity applied to that field integrates it\n//     back out with a three-point Gauss-Hermite rule (exact through the fourth\n//     moment). Three evaluations of a function of one float, not three\n//     evaluations of the noise. `lqRidgeS`/`lqStepS`/`lqPowS` below; Nectar's\n//     branch has the fbm inside a `sin`, where the same integral is closed-form\n//     (E[sin(A + cε)] = sin A · exp(-c²σ²/2)), so it damps the sine instead.\n//\n//  3. **One continuous disc edge.** The fluid always reaches the sphere\n//     boundary. Glass changes its sample coordinates near that boundary, so\n//     toggling the shell cannot reveal a second hard-clipped silhouette.\n//\n// Deliberately NOT ported, and why:\n//   - The liquid grain. It sits below display-pixel scale and adds noise rather\n//     than useful optical detail, so Glass Liquid has no Grain parameter.\n//   - The two contact-shadow ellipses under the ball and its outer\n//     `0 26px 50px -24px` drop shadow. The Orbs family cut the source app's\n//     floor at the user's request, and the export paints over `Color.black`.\n//\n// Scalar controls are packed after `time`; the colour bank starts on the next\n// 16-byte boundary. The TypeScript writer mirrors this order exactly.\nstruct Uniforms {\n  size:           vec2<f32>,\n  time:           f32,\n  speed:          f32,\n  radius:         f32,\n  zoom:           f32,\n  warp:           f32,\n  ridgeAmt:       f32,\n  sharp:          f32,\n  shade:          f32,\n  sheen:          f32,\n  gloss:          f32,\n  shellMidAlpha:  f32,\n  shellEdgeAlpha: f32,\n  exposure:       f32,\n  style:          f32,\n  edgeSoftness:   f32,\n  edgeGlow:       f32,\n  paletteCount:   f32,\n  glassEnabled:   f32,\n  glassOpacity:   f32,\n  contourDeform:  f32,\n  bandDensity:    f32,\n  chromaticShift: f32,\n  metalScale:     f32,\n  metalStretch:   f32,\n  metalAngle:     f32,\n  metalOffset:    f32,\n  metalPhase:     f32,\n  metalEvolution: f32,\n  metalRoughness: f32,\n  metalDepth:     f32,\n  colorA:         vec4<f32>,\n  colorB:         vec4<f32>,\n  colorC:         vec4<f32>,\n  colorD:         vec4<f32>,\n  highlightColor: vec4<f32>,\n  shellInner:     vec4<f32>,\n  shellMid:       vec4<f32>,\n  shellEdge:      vec4<f32>,\n  sheenColor:     vec4<f32>,\n  specColor:      vec4<f32>,\n  canvasColor:    vec4<f32>,\n  glowColor:      vec4<f32>,\n  paletteStop0:    vec4<f32>,\n  paletteStop1:    vec4<f32>,\n  paletteStop2:    vec4<f32>,\n  paletteStop3:    vec4<f32>,\n  paletteStop4:    vec4<f32>,\n  paletteStop5:    vec4<f32>,\n  paletteStop6:    vec4<f32>,\n  paletteStop7:    vec4<f32>,\n  paletteStop8:    vec4<f32>,\n  paletteStop9:    vec4<f32>,\n  paletteStop10:   vec4<f32>,\n  paletteStop11:   vec4<f32>,\n};\n@group(0) @binding(0) var<uniform> u: Uniforms;\n\n// ── The Orbs edge bank (WGSL) ───────────────────────────────────────────────\n// Two knobs every orb on the shelf carries: how soft its limb is, and how far\n// it glows past it. See effects/_shared/edge.ts for the contract.\n//\n// THREE files must agree — edge.wgsl, edge.metal, edge.sksl. Change one, change\n// all three, or the Code tab starts lying about what it ships.\n\n// How much wider than the shipped feather the Edge softness slider is asking\n// for. 0.005 is the width every orb was authored with, so this returns exactly\n// 0 at the default and every edge expression collapses to the constant it\n// replaced — the defaults are bit-identical to the render before the bank.\nfn mfEdgeD(soft: f32) -> f32 {\n  return soft - 0.005;\n}\n\n// The halo an orb throws past its own limb.\n//\n// ADDED, never subtracted: whatever the orb already paints out there — a\n// studio wall, its own exp() bleed, the sheet's cones — survives untouched.\n// That is what lets this be adopted by seventeen shaders whose backdrops have\n// nothing in common.\n//\n// `glow == 0` returns `col` by an early exit rather than by adding zero. Both\n// are exact, but the exit also skips the length() on the ~60% of the frame\n// outside the ball, and 0 is the default.\nfn mfEdgeGlow(col: vec3<f32>, uv: vec2<f32>, ctr: vec2<f32>, rad: f32,\n              soft: f32, glow: f32, glowRGB: vec3<f32>) -> vec3<f32> {\n  if (glow <= 0.0) { return col; }\n  let r = length(uv - ctr);\n  // Fenced to the outside of the limb by the same softness the limb uses, so\n  // the halo starts where the ball stops however soft that boundary is. Without\n  // it the exp() is 1 across the whole disc and washes the face flat.\n  let outside = smoothstep(rad - max(soft, 0.0005), rad + max(soft, 0.0005), r);\n  return col + glowRGB * (glow * exp(-max(r - rad, 0.0) * 11.0) * outside);\n}\n\n\n// ── The Orbs palette-ramp bank (WGSL) ───────────────────────────────────────\n// The add/remove colour list, evaluated INSIDE the shader so every stop paints\n// its own region of the ball instead of being averaged into a role colour.\n// See effects/_shared/ramp.ts for the contract.\n//\n// THREE files must agree — ramp.wgsl, ramp.metal, ramp.sksl. Change one, change\n// all three, or the Code tab starts lying about what it ships.\n\n// One stop, picked without a dynamic array index.\n//\n// A `var` array indexed by a runtime value is the shape that spills to scratch\n// memory on the GPUs this project cares about (PERFORMANCE.md); twelve selects\n// stay in registers and are branchless on every backend. Written once here so\n// no adopting shader has to.\nfn mfRampPick(idx: f32,\n              s0: vec3<f32>, s1: vec3<f32>, s2:  vec3<f32>, s3:  vec3<f32>,\n              s4: vec3<f32>, s5: vec3<f32>, s6:  vec3<f32>, s7:  vec3<f32>,\n              s8: vec3<f32>, s9: vec3<f32>, s10: vec3<f32>, s11: vec3<f32>) -> vec3<f32> {\n  var r = s0;\n  r = select(r, s1,  idx == 1.0);\n  r = select(r, s2,  idx == 2.0);\n  r = select(r, s3,  idx == 3.0);\n  r = select(r, s4,  idx == 4.0);\n  r = select(r, s5,  idx == 5.0);\n  r = select(r, s6,  idx == 6.0);\n  r = select(r, s7,  idx == 7.0);\n  r = select(r, s8,  idx == 8.0);\n  r = select(r, s9,  idx == 9.0);\n  r = select(r, s10, idx == 10.0);\n  r = select(r, s11, idx == 11.0);\n  return r;\n}\n\n// The CYCLIC ramp: `t` wraps, and the last stop runs back into the first.\n//\n// This is the one a generated-colour orb wants. Prism's hue comes from a cosine\n// of an unbounded scalar field, so its colour has always been periodic — a\n// clamped ramp would flatten every band past t == 1 into one colour and throw\n// the banding away. Wrapping keeps the field's structure exactly and only swaps\n// what the structure is *coloured* with.\n//\n// NOT ONE BRANCH IN HERE, and that is load-bearing rather than tidy. An orb\n// evaluates this next to a `fract(sin(x) * 43758.5453)` grain hash, which\n// amplifies a last-bit change in its argument by ~44000x. Any `if` in this file\n// or at a call site splits the fragment's basic block, the compiler stops\n// folding `uv / rad` into its uses, and the hash turns that into speckle up to\n// 33/255 — measured, on exactly the first cut of this bank. Straight-line code\n// keeps the untouched render bit-identical. Same reasoning as the early-out\n// guards every orb carries; see the note in orb-prism.wgsl.\nfn mfRampCyc(tIn: f32, n: f32,\n             s0: vec3<f32>, s1: vec3<f32>, s2:  vec3<f32>, s3:  vec3<f32>,\n             s4: vec3<f32>, s5: vec3<f32>, s6:  vec3<f32>, s7:  vec3<f32>,\n             s8: vec3<f32>, s9: vec3<f32>, s10: vec3<f32>, s11: vec3<f32>) -> vec3<f32> {\n  let k  = clamp(floor(n + 0.5), 1.0, 12.0);\n  let x  = fract(tIn) * k;\n  let i0 = min(floor(x), k - 1.0);\n  let i1 = select(i0 + 1.0, 0.0, i0 + 1.0 >= k);   // the wrap\n  return mix(mfRampPick(i0, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11),\n             mfRampPick(i1, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11),\n             x - i0);\n}\n\n// The CLAMPED ramp: stop 0 at t == 0, the last stop at t == 1, held outside.\n//\n// This is the one an orb with an authored dark→light body ramp wants — the\n// four-stop Deep/Mid/Surge/Crest shape, where the ends really are ends.\n//\n// Branchless for the same reason as `mfRampCyc`. The single-stop case falls out\n// of the arithmetic rather than needing an early return: k == 1 makes the span\n// zero, so x is 0, i0 is 0 and the mix weight is 0 — s0, exactly.\nfn mfRampLin(tIn: f32, n: f32,\n             s0: vec3<f32>, s1: vec3<f32>, s2:  vec3<f32>, s3:  vec3<f32>,\n             s4: vec3<f32>, s5: vec3<f32>, s6:  vec3<f32>, s7:  vec3<f32>,\n             s8: vec3<f32>, s9: vec3<f32>, s10: vec3<f32>, s11: vec3<f32>) -> vec3<f32> {\n  let k  = clamp(floor(n + 0.5), 1.0, 12.0);\n  let x  = clamp(tIn, 0.0, 1.0) * (k - 1.0);\n  let i0 = clamp(floor(x), 0.0, max(k - 2.0, 0.0));\n  return mix(mfRampPick(i0,     s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11),\n             mfRampPick(i0 + 1.0, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11),\n             x - i0);\n}\n\n// ── The ramp as ONE value ───────────────────────────────────────────────────\n//\n// Thirteen uniforms is a reasonable thing for a shader to hold and a terrible\n// thing for a helper to take. Several orbs make their body colour deep inside\n// one — Glass·Liquid's fluid, the studio orbs' environment mirrors — and in the\n// MSL these files are transcribed against, a helper cannot read the stitchable\n// entry point's arguments, so the palette has to be handed down. Bundled like\n// this that is one parameter instead of thirteen, and the three languages stay\n// line-for-line.\n//\n// The stops come back out by CONSTANT index only, so this is still not a\n// dynamically indexed array and still cannot spill to scratch memory.\nstruct MfRamp {\n  n:   f32,\n  s0:  vec3<f32>, s1:  vec3<f32>, s2:  vec3<f32>, s3:  vec3<f32>,\n  s4:  vec3<f32>, s5:  vec3<f32>, s6:  vec3<f32>, s7:  vec3<f32>,\n  s8:  vec3<f32>, s9:  vec3<f32>, s10: vec3<f32>, s11: vec3<f32>,\n};\n\nfn mfRampOf(n: f32,\n            s0: vec3<f32>, s1: vec3<f32>, s2:  vec3<f32>, s3:  vec3<f32>,\n            s4: vec3<f32>, s5: vec3<f32>, s6:  vec3<f32>, s7:  vec3<f32>,\n            s8: vec3<f32>, s9: vec3<f32>, s10: vec3<f32>, s11: vec3<f32>) -> MfRamp {\n  return MfRamp(n, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11);\n}\n\nfn mfRampCycR(t: f32, r: MfRamp) -> vec3<f32> {\n  return mfRampCyc(t, r.n, r.s0, r.s1, r.s2, r.s3, r.s4, r.s5,\n                   r.s6, r.s7, r.s8, r.s9, r.s10, r.s11);\n}\n\nfn mfRampLinR(t: f32, r: MfRamp) -> vec3<f32> {\n  return mfRampLin(t, r.n, r.s0, r.s1, r.s2, r.s3, r.s4, r.s5,\n                   r.s6, r.s7, r.s8, r.s9, r.s10, r.s11);\n}\n\n\n// Fluid geometry, in ball radii (|p| == 1 on the ball's edge, y up).\nconst GL_FU:   f32 = 0.88172043;   // canvas half-side = 0.82/0.93 R\n\n// Pure fluid keeps tighter diffusion; enabling glass restores the source's 5px\n// frosted diffusion inside the inset shell.\nconst GL_BSIG_CLEAR: f32 = 0.01800000;\nconst GL_BSIG_GLASS: f32 = 0.03990000;\n\n// --- the three constants the frequency-domain blur is fitted on -------------\n// A gaussian's response is exp(-k²σ²/2), so GL_KA is k²/2 for the wavenumber\n// where smoothstep-interpolated value noise actually keeps its energy. The\n// textbook choice — one cycle per noise cell, k = 2π, GL_KA = 19.74 — blurs too\n// hard, because the smoothstep interpolation is itself a low-pass and pulls the\n// effective k down to about 3.5. Fitted against the 13-tap render.\nconst GL_KA:  f32 = 6.0;\n// (2.03)² — how σ grows, in its own octave's cells, from one octave to the next.\nconst GL_KG:  f32 = 4.1209;\n// The warp field displaces the fluid rather than colouring it, so blurring the\n// image does not attenuate it as strongly as the model says. Also fitted.\nconst GL_KWA: f32 = 0.5;\n// One value-noise octave's standard deviation about its own mean, as a fraction\n// of its range — the scale that turns \"amplitude the attenuation removed\" into\n// \"how far the removed detail typically pushed the value\".\nconst GL_KR:  f32 = 0.32;\nconst GL_GH:  f32 = 1.73205081;   // sqrt(3), the 3-point Gauss-Hermite abscissa\n\n// Pure fluid reaches the ball edge.\nconst GL_CLEAR_EA: f32 = 0.995;\nconst GL_CLEAR_EB: f32 = 1.04;\n\n// ---------------------------------------------------------------------------\n// The sheet's liquid noise bank. Five octaves, gain .5, normalised by the\n// weight sum, and rotated every octave. This is NOT the bank the sheet's Prism\n// screen uses (a different hash, gain .55, unnormalised, no rotation).\n// ---------------------------------------------------------------------------\nfn lqHash(pIn: vec2<f32>) -> f32 {\n  var p = fract(pIn * vec2<f32>(123.34, 456.21));\n  p = p + vec2<f32>(dot(p, p + vec2<f32>(45.32)));\n  return fract(p.x * p.y);\n}\n\nfn lqNoise(p: vec2<f32>) -> f32 {\n  let i = floor(p);\n  var f = fract(p);\n  f = f * f * (3.0 - 2.0 * f);\n  return mix(mix(lqHash(i), lqHash(i + vec2<f32>(1.0, 0.0)), f.x),\n             mix(lqHash(i + vec2<f32>(0.0, 1.0)), lqHash(i + vec2<f32>(1.0, 1.0)), f.x), f.y);\n}\n\n// The fbm, pre-blurred. `bs` is the blur's sigma expressed in THIS call's input\n// units — the caller scales it by whatever it scaled the domain by. Returns\n// `.x` the attenuated value and `.y` the standard deviation of the detail the\n// attenuation took out, which is what a following nonlinearity has to integrate\n// over. Both are exact for a gaussian window: the surviving amplitude is β and\n// the variance that leaves is (1 - β²), per octave, weighted by that octave's\n// own share of the normalised sum.\nfn lqFbm(pIn: vec2<f32>, bs: f32) -> vec2<f32> {\n  var p = pIn;\n  var s:  f32 = 0.0;\n  var a:  f32 = 0.5;\n  var m:  f32 = 0.0;\n  var vr: f32 = 0.0;\n  let e = -GL_KA * bs * bs;\n  var g: f32 = 1.0;\n  for (var i: i32 = 0; i < 5; i = i + 1) {\n    let b = exp(e * g);\n    s  = s  + a * (0.5 + b * (lqNoise(p) - 0.5));\n    vr = vr + a * a * (1.0 - b * b);\n    m  = m + a;\n    a  = a * 0.5;\n    g  = g * GL_KG;\n    // GLSL's mat2(.8,.6,-.6,.8) is COLUMN-major — columns (.8,.6) and\n    // (-.6,.8) — so the product is written out rather than constructed.\n    p = vec2<f32>(0.8 * p.x - 0.6 * p.y, 0.6 * p.x + 0.8 * p.y) * 2.03;\n  }\n  return vec2<f32>(s / m, GL_KR * sqrt(vr) / m);\n}\n\nfn lqRidge(v: f32, k: f32) -> f32 {\n  return pow(clamp(1.0 - abs(v * 2.0 - 1.0), 0.0, 1.0), k);\n}\n\n// The sheet's four-stop ramp, shared by every branch of every program.\nfn lqRamp(v: f32, cA: vec3<f32>, cB: vec3<f32>, cC: vec3<f32>, cD: vec3<f32>) -> vec3<f32> {\n  var c = mix(cA, cB, smoothstep(0.0, 0.45, v));\n  c = mix(c, cC, smoothstep(0.38, 0.72, v));\n  c = mix(c, cD, smoothstep(0.68, 1.0, v));\n  // The editor's four colours are the default ramp. An optional custom palette\n  // can replace them without changing the scalar field that produces `v`.\n  return select(c, mfRampLin(v, u.paletteCount,\n                             u.paletteStop0.rgb, u.paletteStop1.rgb, u.paletteStop2.rgb,\n                             u.paletteStop3.rgb, u.paletteStop4.rgb, u.paletteStop5.rgb,\n                             u.paletteStop6.rgb, u.paletteStop7.rgb, u.paletteStop8.rgb,\n                             u.paletteStop9.rgb, u.paletteStop10.rgb, u.paletteStop11.rgb), u.paletteCount > 0.5);\n}\n\n// ---------------------------------------------------------------------------\n// The three nonlinearities the fluid applies to a pre-blurred field, each\n// integrated over the detail `lqFbm` attenuated away. Three-point\n// Gauss-Hermite — nodes 0 and ±sqrt(3)·sd, weights 4/6 and 1/6 — reproduces a\n// gaussian's second AND fourth moments, which is what keeps a ridged filament\n// spreading as it dims instead of just dimming. `vs` is an `lqFbm` result:\n// `.x` the value, `.y` that standard deviation.\n// ---------------------------------------------------------------------------\nfn lqRidgeS(vs: vec2<f32>, k: f32) -> f32 {\n  let d = GL_GH * vs.y;\n  return (lqRidge(vs.x - d, k) + 4.0 * lqRidge(vs.x, k) + lqRidge(vs.x + d, k)) / 6.0;\n}\n\nfn lqStepS(vs: vec2<f32>, a: f32, b: f32) -> f32 {\n  let d = GL_GH * vs.y;\n  return (smoothstep(a, b, vs.x - d) + 4.0 * smoothstep(a, b, vs.x)\n        + smoothstep(a, b, vs.x + d)) / 6.0;\n}\n\nfn lqPowS(vs: vec2<f32>, k: f32) -> f32 {\n  let d = GL_GH * vs.y;\n  return (pow(clamp(vs.x - d, 0.0, 1.0), k) + 4.0 * pow(clamp(vs.x, 0.0, 1.0), k)\n        + pow(clamp(vs.x + d, 0.0, 1.0), k)) / 6.0;\n}\n\n// ---------------------------------------------------------------------------\n// Curated local flow programs. Each preset owns a different spatial model;\n// colour changes are secondary to silhouette, frequency, and motion structure.\n// ---------------------------------------------------------------------------\n\nfn glsFinishPresetFluid(colorIn: vec3<f32>, p: vec2<f32>) -> vec3<f32> {\n  var color = colorIn;\n  color = mix(color, u.highlightColor.rgb,\n              u.shade * 0.22 * smoothstep(0.15, 1.15, dot(p, vec2<f32>(-0.32, 0.78))));\n  color = color * (1.0 - u.shade * 0.34\n                  * smoothstep(-0.1, 1.2, dot(p, vec2<f32>(0.45, -0.62))));\n  color = color * (1.0 - u.shade * 0.22 * smoothstep(0.72, 1.08, length(p)));\n  return clamp(color, vec3<f32>(0.0), vec3<f32>(1.0));\n}\n\nfn glsSiriBand(q: vec2<f32>, drift: f32, phaseOffset: f32, amplitude: f32,\n               mainY: f32, envelope: f32, softness: f32) -> vec2<f32> {\n  let y = amplitude * envelope * sin(q.x * 1.0 + drift + phaseOffset);\n  let distanceToLine = abs(q.y - y);\n  let line = 0.018 / (sqrt(distanceToLine * distanceToLine + softness * softness) + 0.026);\n  let bandDistance = max(0.0, max(q.y - max(mainY, y), min(mainY, y) - q.y));\n  let band = 0.018 / (bandDistance + 0.075);\n  return vec2<f32>(line, band);\n}\n\nfn glsSiriFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // The reference wave is a main sinusoid plus four chromatically separated\n  // waves. Their enclosed bands carry colour while the shared crest stays hot.\n  let scale = 0.74 + u.zoom * 0.34;\n  let q = p / scale;\n  let xNorm = q.x;\n  let envelopeBase = cos(1.57079633 * min(abs(0.9 * xNorm), 1.0));\n  let envelope = envelopeBase * envelopeBase;\n  let low = 0.5 + 0.5 * cos(t * 0.37);\n  let mid = 0.5 + 0.5 * sin(t * 0.51 + 1.2);\n  let high = 0.5 + 0.5 * cos(t * 0.73 + 2.1);\n  let drift = t * 2.4;\n  let mainAmplitude = 0.25 + u.ridgeAmt * 0.075 + low * 0.018;\n  let bandAmplitude = mainAmplitude + mid * 0.025 + high * 0.018;\n  let mainY = mainAmplitude * envelope * sin(q.x * 1.1 + drift);\n  let separation = 1.85 + u.warp * 0.2 + mid * 0.28;\n  let softness = 0.035 + (1.0 - u.ridgeAmt) * 0.018 + mid * 0.006;\n\n  let band0 = glsSiriBand(q, drift, -separation, bandAmplitude, mainY, envelope, softness);\n  let band1 = glsSiriBand(q, drift, -separation * 0.34, bandAmplitude, mainY, envelope, softness);\n  let band2 = glsSiriBand(q, drift, separation * 0.34, bandAmplitude, mainY, envelope, softness);\n  let band3 = glsSiriBand(q, drift, separation, bandAmplitude, mainY, envelope, softness);\n  let w0 = band0.x + band0.y;\n  let w1 = band1.x + band1.y;\n  let w2 = band2.x + band2.y;\n  let w3 = band3.x + band3.y;\n  let total = w0 + w1 + w2 + w3;\n  let dominant0 = w0 * w0;\n  let dominant1 = w1 * w1;\n  let dominant2 = w2 * w2;\n  let dominant3 = w3 * w3;\n  let dominantTotal = dominant0 + dominant1 + dominant2 + dominant3;\n  let spectral = (u.colorA.rgb * dominant0 + u.colorC.rgb * dominant1\n                + u.colorB.rgb * dominant2 + u.colorD.rgb * dominant3)\n                / max(dominantTotal, 0.0001);\n  let energy = (1.0 - exp(-total * 0.58)) * envelope;\n  let mainDistance = abs(q.y - mainY);\n  let whiteCore = exp(-mainDistance * mainDistance / 0.0028) * envelope;\n  let atmosphere = mix(u.colorD.rgb, u.colorB.rgb,\n                       smoothstep(-0.7, 0.7, q.y)) * 0.018;\n  var color = atmosphere + spectral * energy * 1.14;\n  color = color + u.highlightColor.rgb * whiteCore * (0.18 + 0.1 * low);\n  color = color / (vec3<f32>(1.0) + color * 0.18);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsSpectrumHeight(q: vec2<f32>, t: f32, frequency: f32,\n                     phaseOffset: f32, amplitude: f32) -> f32 {\n  let x = q.x * 2.15;\n  let envelope = pow(4.0 / (4.0 + x * x), 4.0);\n  let breathing = 0.82 + 0.18 * sin(t * 0.48 + phaseOffset * 0.7);\n  let wave = abs(sin(frequency * x - t * 1.36 + phaseOffset));\n  return envelope * amplitude * breathing * (0.28 + 0.72 * wave);\n}\n\nfn glsSpectrumLayer(q: vec2<f32>, height: f32, softness: f32) -> f32 {\n  return (1.0 - smoothstep(max(height - softness, 0.0), height + softness, abs(q.y)))\n         * smoothstep(0.0, 0.045, height);\n}\n\nfn glsSpectrumFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // Three symmetric filled wave surfaces orbit a persistent support line. This\n  // keeps the iOS 9 voice-field silhouette without depending on canvas strokes.\n  let scale = 0.74 + u.zoom * 0.34;\n  let q = p / scale;\n  let amplitude = 0.26 + u.ridgeAmt * 0.27;\n  let frequency = 0.72 + u.warp * 0.095;\n  let softness = 0.026 + (1.0 - u.ridgeAmt) * 0.032;\n  let h0 = glsSpectrumHeight(q, t, frequency * 0.82, -1.2, amplitude * 0.72);\n  let h1 = glsSpectrumHeight(q, t, frequency, 0.45, amplitude);\n  let h2 = glsSpectrumHeight(q, t, frequency * 1.17, 2.05, amplitude * 0.82);\n  let l0 = glsSpectrumLayer(q, h0, softness);\n  let l1 = glsSpectrumLayer(q, h1, softness);\n  let l2 = glsSpectrumLayer(q, h2, softness);\n  let spectrumX = q.x * 2.15;\n  let envelope = pow(4.0 / (4.0 + spectrumX * spectrumX), 4.0);\n  let support = exp(-q.y * q.y / 0.00072) * envelope;\n  let total = l0 + l1 + l2;\n  let spectral = (u.colorB.rgb * l0 + u.colorC.rgb * l1 + u.colorD.rgb * l2)\n                 / max(total, 0.001);\n  var color = u.colorD.rgb * 0.025 + spectral * (1.0 - exp(-total * 0.86));\n  color = color + u.colorA.rgb * support * 0.58;\n  color = color / (vec3<f32>(1.0) + color * 0.2);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsAuroraLayer(p: vec2<f32>, t: f32, offset: f32) -> f32 {\n  let drift = t * 0.18 + offset * 2.5;\n  let wave1 = sin(p.x * (2.0 + u.warp * 0.13) + drift + offset * 6.0) * 0.25;\n  let wave2 = sin(p.x * 3.7 + drift * 1.3 + offset * 4.0) * 0.12;\n  let wave3 = sin(p.x * 7.2 + drift * 0.7 + offset * 8.0) * 0.055;\n  let noiseValue = lqFbm(vec2<f32>(p.x * 1.6 + drift * 0.35,\n                                   p.y * 0.8 + offset * 3.0), 0.018).x;\n  let center = offset * 0.46 + wave1 + wave2 + wave3\n               + (noiseValue - 0.5) * 0.28;\n  let dist = abs(p.y - center);\n  let glow = exp(-dist * dist * (13.0 - 5.0 * u.ridgeAmt));\n  let shimmer = lqFbm(vec2<f32>(p.x * 4.0 + t * 0.22,\n                                p.y * 7.0 + offset * 5.0), 0.012).x;\n  return glow * (0.64 + 0.36 * shimmer);\n}\n\nfn glsAuroraFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  let q = p * (0.82 + u.zoom * 0.58);\n  let l0 = glsAuroraLayer(q, t, -0.72);\n  let l1 = glsAuroraLayer(q, t, 0.0);\n  let l2 = glsAuroraLayer(q, t, 0.72);\n  var color = u.colorA.rgb * (0.46 + 0.18 * (q.y + 1.0));\n  color = color + u.colorB.rgb * l0 * 1.3;\n  color = color + u.colorC.rgb * l1 * 1.15;\n  color = color + u.colorD.rgb * l2 * 1.2;\n  color = color + mix(u.colorB.rgb, u.colorD.rgb, 0.5) * min(l0 * l2, l1) * 0.65;\n\n  let starUv = (q + vec2<f32>(1.0)) * 18.0;\n  let starCell = floor(starUv);\n  let starHash = lqHash(starCell);\n  let starPoint = exp(-dot(fract(starUv) - vec2<f32>(0.5),\n                            fract(starUv) - vec2<f32>(0.5)) * 90.0);\n  let stars = step(0.965, starHash) * starPoint\n              * (0.55 + 0.45 * sin(t * (1.0 + starHash * 2.0) + starHash * 6.28));\n  color = color + u.highlightColor.rgb * stars * (1.0 - clamp(l0 + l1 + l2, 0.0, 1.0));\n  color = color / (vec3<f32>(1.0) + color * 0.28);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsRotate(p: vec2<f32>, angle: f32) -> vec2<f32> {\n  let c = cos(angle);\n  let s = sin(angle);\n  return vec2<f32>(c * p.x - s * p.y, s * p.x + c * p.y);\n}\n\nfn glsNeuroShape(pIn: vec2<f32>, t: f32) -> f32 {\n  var p = pIn * (0.34 + 0.08 * u.zoom);\n  var sineAccum = vec2<f32>(0.0);\n  var result = vec2<f32>(0.0);\n  var scale = 8.0;\n  for (var j: i32 = 0; j < 11; j = j + 1) {\n    p = glsRotate(p, 1.0);\n    sineAccum = glsRotate(sineAccum, 1.0);\n    let layer = p * scale + vec2<f32>(f32(j)) + sineAccum - vec2<f32>(t * 0.34);\n    sineAccum = sineAccum + sin(layer);\n    result = result + (vec2<f32>(0.5) + 0.5 * cos(layer)) / scale;\n    scale = scale * 1.16;\n  }\n  return result.x + result.y;\n}\n\nfn glsPlasmaFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  let shape = glsNeuroShape(p, t);\n  let phase = shape * (10.0 + u.warp) + p.x * 1.7 - p.y * 1.3 - t * 0.52;\n  let ridgeWidth = 0.62 - 0.24 * u.ridgeAmt;\n  let primary = pow(abs(cos(phase)), max(1.3, u.sharp * ridgeWidth));\n  let secondary = pow(abs(cos(phase * 0.53 + atan2(p.y, p.x) * 2.0 + t * 0.21)),\n                      max(1.6, u.sharp * (ridgeWidth + 0.1)));\n  let filaments = max(primary, secondary * 0.64);\n  let core = pow(primary, 4.0);\n  let polarity = 0.5 + 0.5 * sin(phase * 0.37 + shape * 3.0);\n  var color = mix(u.colorA.rgb * 0.42, u.colorD.rgb * 0.48, polarity * 0.46);\n  color = mix(color, u.colorB.rgb, filaments * 0.72);\n  color = mix(color, u.colorC.rgb, core * 0.68);\n  color = color + u.highlightColor.rgb * pow(core, 3.0) * 0.16;\n  color = color / (vec3<f32>(1.0) + color * 0.34);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsChromeFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  var q = p * (1.0 + u.zoom * 0.35);\n  let amplitude = 0.028 * u.warp;\n  for (var i: i32 = 1; i <= 9; i = i + 1) {\n    let fi = f32(i);\n    q.x = q.x + amplitude / fi * cos(fi * 2.7 * q.y + t * 0.46);\n    q.y = q.y + amplitude / fi * cos(fi * 3.1 * q.x - t * 0.4);\n  }\n  let denominator = max(abs(sin(t * 0.24 - q.y - q.x)), 0.045);\n  let flare = clamp(1.0 / denominator, 0.0, 18.0);\n  let metal = smoothstep(1.15, 7.5, flare);\n  let fold = 0.5 + 0.5 * cos((q.x - q.y) * (3.2 + u.sharp * 0.28) + t * 0.32);\n  let value = clamp(metal * 0.74 + fold * 0.36, 0.0, 1.0);\n  var color = lqRamp(value, u.colorD.rgb, u.colorC.rgb, u.colorB.rgb, u.colorA.rgb);\n  color = mix(color, u.colorA.rgb, pow(metal, 5.0) * 0.62);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsChromaticMetalPhase(p: vec2<f32>, t: f32) -> f32 {\n  let angle = u.metalAngle * 0.01745329252;\n  let scale = max(u.metalScale, 0.05);\n  let stretch = mix(0.48, 1.58, clamp(u.metalStretch, 0.0, 1.0));\n  var q = glsRotate(p / scale, angle);\n  q = vec2<f32>(q.x / stretch, q.y * stretch);\n\n  // The reference advances continuously while local reflections evolve out of\n  // phase. Travelling domain waves provide that deformation without rotating\n  // the entire pattern as one rigid layer. Integer harmonics keep a clean loop.\n  let cycle = t * 0.46 + u.metalPhase * 6.28318530718;\n  let evolution = clamp(u.metalEvolution, 0.0, 2.0);\n  q.x = q.x + sin(q.y * 1.86 - cycle) * 0.095 * evolution;\n  q.x = q.x + sin((q.x + q.y) * 1.28 + cycle * 2.0 + 1.4) * 0.045 * evolution;\n  q.y = q.y + sin(q.x * 1.52 + cycle + 0.8) * 0.07 * evolution;\n\n  let repeats = max(u.bandDensity, 1.0);\n  return q.x * repeats * 2.18\n       + sin(q.y * (1.3 + repeats * 0.26) - cycle) * 0.56 * evolution\n       + sin((q.x - q.y) * 1.34 + cycle * 2.0 + 1.7) * 0.27 * evolution\n       + sin((q.x * 0.72 + q.y) * 2.1 - cycle * 3.0 + 0.35) * 0.11 * evolution\n       + sin(cycle) * 0.1\n       + sin(cycle * 3.0 + 0.7) * 0.035\n       + cycle\n       + u.metalOffset * 6.28318530718;\n}\n\nfn glsChromaticMetalTone(phase: f32) -> f32 {\n  let wave = 0.5 + 0.5 * cos(phase);\n  let roughness = clamp(u.metalRoughness, 0.0, 1.0);\n  let depth = clamp(u.metalDepth, 0.0, 1.0);\n  let edge = 0.025 + roughness * 0.18;\n  let broadReflection = smoothstep(0.5 - edge, 0.5 + edge, wave);\n  let hardReflection = pow(wave, mix(13.0, 4.0, roughness));\n  let blackFold = pow(1.0 - wave, mix(9.0, 3.0, roughness));\n  let body = mix(wave, broadReflection, 0.2 + depth * 0.3);\n  return clamp(0.018 + body * (0.46 + depth * 0.12)\n               + hardReflection * (0.3 + depth * 0.42)\n               - blackFold * (0.07 + depth * 0.11), 0.0, 1.0);\n}\n\nfn glsChromaticMetalSample(p: vec2<f32>, t: f32) -> vec3<f32> {\n  let phase = glsChromaticMetalPhase(p, t);\n  let angle = u.metalAngle * 0.01745329252;\n  let brushP = glsRotate(p / max(u.metalScale, 0.05), angle);\n  let brushed = sin(brushP.y * 146.0 + sin(brushP.x * 11.0) * 0.58)\n              + 0.48 * sin(brushP.y * 317.0 - brushP.x * 5.0);\n  let brushAmount = 0.004 + clamp(u.metalRoughness, 0.0, 1.0) * 0.014;\n  let tone = clamp(glsChromaticMetalTone(phase) + brushed * brushAmount, 0.0, 1.0);\n  return lqRamp(tone, u.colorD.rgb, u.colorB.rgb, u.colorC.rgb, u.colorA.rgb);\n}\n\nfn glsChromaticMetalFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  let angle = u.metalAngle * 0.01745329252;\n  let splitDirection = glsRotate(vec2<f32>(0.0, 1.0), angle);\n  let split = splitDirection * u.chromaticShift * 0.045;\n  let redSample = glsChromaticMetalSample(p + split, t);\n  let neutral = glsChromaticMetalSample(p, t);\n  let blueSample = glsChromaticMetalSample(p - split, t);\n  let optical = vec3<f32>(redSample.r, neutral.g, blueSample.b);\n  let fringe = clamp(length(optical - neutral) * 4.0, 0.0, 1.0);\n  var color = mix(neutral, optical,\n                  clamp(u.chromaticShift * (0.72 + fringe * 0.28), 0.0, 1.0));\n  let centerTone = glsChromaticMetalTone(glsChromaticMetalPhase(p, t));\n  let glint = pow(centerTone, mix(12.0, 5.0, clamp(u.metalRoughness, 0.0, 1.0)));\n  color = mix(color, u.highlightColor.rgb,\n              glint * clamp(u.metalDepth, 0.0, 1.0) * 0.06);\n\n  // A second, sphere-scale reflection layer keeps the material metallic even\n  // when the optional glass shell is disabled. It modulates the animated ramp\n  // instead of raising exposure, preserving dark chrome between reflections.\n  let radial2 = clamp(dot(p, p), 0.0, 1.0);\n  let normal = normalize(vec3<f32>(p, sqrt(max(1.0 - radial2, 0.0))));\n  let roughness = clamp(u.metalRoughness, 0.0, 1.0);\n  let depth = clamp(u.metalDepth, 0.0, 1.0);\n  let key = pow(max(dot(normal, normalize(vec3<f32>(-0.48, 0.62, 0.62))), 0.0),\n                mix(7.0, 3.0, roughness));\n  let fill = pow(max(dot(normal, normalize(vec3<f32>(0.7, -0.34, 0.63))), 0.0),\n                 mix(10.0, 4.0, roughness));\n  let limb = 1.0 - normal.z;\n  let fresnel = pow(limb, 3.0);\n  let rim = pow(limb, 10.0);\n  color = color * (0.86 + normal.z * 0.14);\n  color = mix(color, u.highlightColor.rgb, key * (0.05 + depth * 0.13));\n  color = mix(color, u.colorC.rgb, fill * (0.025 + depth * 0.07));\n  color = mix(color, u.colorD.rgb, fresnel * (0.12 + depth * 0.15));\n  color = mix(color, u.highlightColor.rgb, rim * (0.035 + depth * 0.055));\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsOpalFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  let q = p * (0.8 + u.zoom * 0.64);\n  let complexity = 0.76 + u.warp * 0.085;\n  var d = -t * 0.42;\n  var a = 0.0;\n  for (var i: i32 = 0; i < 8; i = i + 1) {\n    let fi = f32(i);\n    a = a + cos(fi - d - a * q.x * complexity);\n    d = d + sin(q.y * fi * complexity + a);\n  }\n  d = d + t * 0.42;\n  let c1 = cos(q * vec2<f32>(d, a)) * 0.6 + vec2<f32>(0.4);\n  let c2 = cos(a + d) * 0.5 + 0.5;\n  let interference = 0.5 + 0.5 * cos(vec3<f32>(c1.x, c1.y, c2)\n                         * cos(vec3<f32>(d, a, 2.5)) * 0.5 + vec3<f32>(0.5));\n  let tone = fract(interference.r * 0.37 + interference.g * 0.51\n                   + interference.b * 0.73 + c1.x * 0.22 - c1.y * 0.15);\n  var color = lqRamp(tone, u.colorB.rgb, u.colorC.rgb, u.colorD.rgb, u.colorA.rgb);\n  color = mix(color, u.colorA.rgb, 0.16 + 0.1 * interference.b);\n  color = color / (vec3<f32>(1.0) + color * 0.16);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsFrostFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // The initial frost-style orb: a slow domain warp drives broad cloudy colour\n  // bodies, while a second higher-frequency field contributes adjustable veins.\n  var q = p * (0.66 + u.zoom * 0.92);\n  q.y = q.y + t * 0.055;\n  let blur = 0.011 + 0.006 * u.zoom;\n  let warpField = vec2<f32>(\n    lqFbm(q * 1.14 + vec2<f32>(t * 0.055, 0.0), blur).x,\n    lqFbm(q * 1.14 + vec2<f32>(6.8, -t * 0.048), blur).x\n  );\n  let warped = q + (warpField - vec2<f32>(0.5)) * (0.28 + u.warp * 0.17);\n  let body = lqFbm(warped * 1.48 + vec2<f32>(t * 0.032, -t * 0.02), blur * 1.48);\n  let veins = lqRidgeS(\n    lqFbm(warped * 2.36 + vec2<f32>(3.1, -t * 0.024), blur * 2.36),\n    u.sharp\n  );\n  let value = mix(lqStepS(body, 0.1, 0.9),\n                  clamp(veins * 0.8 + body.x * 0.46, 0.0, 1.0),\n                  u.ridgeAmt);\n  var color = lqRamp(value, u.colorA.rgb, u.colorB.rgb, u.colorC.rgb, u.colorD.rgb);\n  color = mix(color, u.colorA.rgb, 0.08 * smoothstep(0.62, 0.92, body.x));\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsVoiceWaveFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // A single broad membrane stays phase-coherent across the sphere. Nearby\n  // translucent layers add volume without splitting into separate Siri bands.\n  let scale = 0.76 + u.zoom * 0.34;\n  let q = p / scale;\n  let rimEnvelope = pow(max(1.0 - q.x * q.x, 0.0), 0.72);\n  let drift = t * 0.82;\n  let amplitude = 0.2 + u.warp * 0.018;\n  let mainY = rimEnvelope * (amplitude * sin(q.x * 1.48 + drift)\n              + 0.055 * sin(q.x * 3.2 - drift * 0.43 + 1.1));\n  let distance = q.y - mainY;\n  let width = 0.11 + (1.0 - u.ridgeAmt) * 0.075;\n  let membrane = exp(-distance * distance / max(width * width, 0.001)) * rimEnvelope;\n  let upperVeil = exp(-(distance - 0.105) * (distance - 0.105)\n                      / max(width * width * 2.4, 0.001)) * rimEnvelope;\n  let lowerVeil = exp(-(distance + 0.115) * (distance + 0.115)\n                      / max(width * width * 2.8, 0.001)) * rimEnvelope;\n  let crest = exp(-distance * distance / 0.0026) * rimEnvelope;\n  let depth = sqrt(max(1.0 - clamp(dot(p, p), 0.0, 1.0), 0.0));\n  var color = mix(u.colorA.rgb * 0.7, u.colorD.rgb * 0.34,\n                  smoothstep(-0.82, 0.82, q.y));\n  color = mix(color, u.colorB.rgb, upperVeil * 0.7);\n  color = mix(color, u.colorC.rgb, lowerVeil * 0.62);\n  color = color + mix(u.colorB.rgb, u.colorC.rgb, 0.46) * membrane * 0.34;\n  color = color + u.highlightColor.rgb * crest * 0.14;\n  color = color * (0.58 + 0.42 * depth);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsBlueDropFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // Slow diagonal advection keeps the broad liquid bodies coherent. The two\n  // shear waves replace the reference orb's circular, looped point motion.\n  let depth = sqrt(max(1.0 - clamp(dot(p, p), 0.0, 1.0), 0.0));\n  var q = p * mix(0.72, 1.0, depth * 0.62 + 0.38);\n  q = glsRotate(q, -0.24 + 0.06 * sin(t * 0.17));\n  let scale = 1.0 + u.zoom * 1.12;\n  let blur = 0.012 + 0.006 * u.zoom;\n  let driftA = lqFbm(q * 1.28 + vec2<f32>(t * 0.095, -t * 0.034), blur * 1.28);\n  let driftB = lqFbm(glsRotate(q, 1.08) * 1.62\n                     + vec2<f32>(-t * 0.042, t * 0.078), blur * 1.62);\n  var flowed = q + vec2<f32>(driftA.x - 0.5, driftB.x - 0.5)\n                 * (0.24 + u.warp * 0.1);\n  flowed.x = flowed.x + sin(flowed.y * 2.15 + t * 0.24) * (0.035 + u.warp * 0.012);\n  flowed.y = flowed.y + sin(flowed.x * 1.38 - t * 0.18) * (0.045 + u.warp * 0.01);\n  let body = lqFbm(flowed * scale + vec2<f32>(t * 0.025, -t * 0.018), blur * scale);\n  let marble = lqRidgeS(lqFbm(flowed * (1.72 + u.zoom * 0.9)\n                              + vec2<f32>(2.7, -t * 0.035),\n                              blur * (1.72 + u.zoom * 0.9)),\n                            0.8 + u.sharp * 0.46);\n  let value = clamp(mix(body.x, body.x * 0.62 + marble * 0.58, u.ridgeAmt), 0.0, 1.0);\n  var color = lqRamp(value, u.colorA.rgb, u.colorB.rgb, u.colorC.rgb, u.colorD.rgb);\n  let light = pow(max(dot(normalize(vec3<f32>(p, depth)),\n                          normalize(vec3<f32>(-0.48, 0.62, 0.92))), 0.0), 3.2);\n  color = mix(color, u.highlightColor.rgb, light * (0.035 + 0.05 * u.shade));\n  color = color * (0.74 + 0.26 * depth);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsVioletEmberFluid(p: vec2<f32>, t: f32) -> vec3<f32> {\n  // A radial twist and two crossing drift fields make heavy molten folds. This\n  // moves as a breathing spiral instead of the reference orb's closed circles.\n  let scale = 1.08 + u.zoom * 1.18;\n  let blur = 0.011 + 0.005 * u.zoom;\n  let radius = length(p);\n  let twist = t * 0.055 + radius * (0.72 + u.warp * 0.11)\n              + 0.08 * sin(t * 0.31 + radius * 4.0);\n  let q = glsRotate(p * scale, twist);\n  let low = lqFbm(q * 1.18 + vec2<f32>(t * 0.068, -t * 0.105), blur * 1.18);\n  let cross = lqFbm(glsRotate(q, -1.12) * 1.52\n                    + vec2<f32>(-t * 0.094, t * 0.042)\n                    + vec2<f32>(low.x * 1.35, -low.x * 0.72), blur * 1.52);\n  let warped = q + vec2<f32>(low.x - 0.5, cross.x - 0.5)\n                   * (0.3 + u.warp * 0.12);\n  let melt = lqFbm(warped * 1.34\n                   + vec2<f32>(cross.x * 1.48, low.x * 1.12), blur * 1.34);\n  let veins = lqRidgeS(lqFbm(warped * (2.05 + u.zoom * 0.72)\n                             + vec2<f32>(-2.1, t * 0.052),\n                             blur * (2.05 + u.zoom * 0.72)),\n                           0.82 + u.sharp * 0.58);\n  let heat = smoothstep(0.18, 0.92,\n                        melt.x * (0.72 - u.ridgeAmt * 0.16)\n                        + veins * (0.32 + u.ridgeAmt * 0.5));\n  var color = lqRamp(heat, u.colorA.rgb, u.colorB.rgb, u.colorC.rgb, u.colorD.rgb);\n  let pulse = 0.94 + 0.06 * sin(t * 0.44 + melt.x * 5.0);\n  color = color * pulse;\n  color = mix(color, u.highlightColor.rgb, pow(veins, 4.0) * 0.045);\n  return glsFinishPresetFluid(color, p);\n}\n\nfn glsPresetFluid(p: vec2<f32>, style: i32, t: f32) -> vec3<f32> {\n  if (style == 9) { return glsSiriFluid(p, t); }\n  if (style == 10) { return glsAuroraFluid(p, t); }\n  if (style == 11) { return glsPlasmaFluid(p, t); }\n  if (style == 12) { return glsChromeFluid(p, t); }\n  if (style == 13) { return glsOpalFluid(p, t); }\n  if (style == 14) { return glsSpectrumFluid(p, t); }\n  if (style == 15) { return glsFrostFluid(p, t); }\n  if (style == 19) { return glsVoiceWaveFluid(p, t); }\n  if (style == 20) { return glsBlueDropFluid(p, t); }\n  if (style == 21) { return glsVioletEmberFluid(p, t); }\n  if (style == 22) { return glsChromaticMetalFluid(p, t); }\n  return glsFrostFluid(p, t);\n}\n\n// ---------------------------------------------------------------------------\n// The fluid, at one point, already blurred and straight (not premultiplied):\n// the sheet's shader on `fu` — both programs, all four inner branches, and the\n// shared shade tail — with the blur folded into the noise bank as above. The\n// disc's own alpha is the caller's, because it is analytic now.\n// ---------------------------------------------------------------------------\nfn glsFluid(fu: vec2<f32>, md: i32, t: f32) -> vec3<f32> {\n  let df = length(fu);\n\n  let cA = u.colorA.rgb;\n  let cB = u.colorB.rgb;\n  let cC = u.colorC.rgb;\n  let cD = u.colorD.rgb;\n\n  // The blur's sigma, carried from fluid units into the fluid's own domains.\n  // `sp` is it in pp/q units — the warp shifts q about but does not stretch it\n  // on average, so pp and q share one. `sw` is the warp field's own, softened\n  // by GL_KWA.\n  let blurSigma = select(GL_BSIG_CLEAR, GL_BSIG_GLASS, u.glassEnabled > 0.5);\n  let sp = blurSigma * u.zoom;\n  let sw = sp * 1.1 * GL_KWA;\n\n  var fcol: vec3<f32>;\n  if (md < 0) {\n    // progA — the warped body, the only branch with the slow vertical drift\n    // and the only one that reads Ridge.\n    var pp = fu * u.zoom;\n    pp.y = pp.y + t * 0.05;\n    let w = vec2<f32>(lqFbm(pp * 1.1 + vec2<f32>(0.0, t * 0.09), sw).x,\n                      lqFbm(pp * 1.1 + vec2<f32>(7.7, -t * 0.07), sw).x);\n    let q = pp + u.warp * (w - vec2<f32>(0.5));\n    let body  = lqFbm(q * 1.5 + vec2<f32>(t * 0.04, 0.0), sp * 1.5);\n    let veins = lqRidgeS(lqFbm(q * 2.2 + vec2<f32>(3.1), sp * 2.2), u.sharp);\n    let v = mix(lqStepS(body, 0.12, 0.88),\n                clamp(veins * 0.85 + 0.45 * body.x, 0.0, 1.0), u.ridgeAmt);\n    fcol = lqRamp(v, cA, cB, cC, cD);\n  } else {\n    // progB — same warp, no vertical drift, four inner branches.\n    let pp = fu * u.zoom;\n    let w = vec2<f32>(lqFbm(pp * 1.1 + vec2<f32>(0.0, t * 0.09), sw).x,\n                      lqFbm(pp * 1.1 + vec2<f32>(7.7, -t * 0.07), sw).x);\n    let q = pp + u.warp * (w - vec2<f32>(0.5));\n    if (md == 0) {\n      // Nectar — a sine band the noise leans on. The fbm is INSIDE the sine, so\n      // the removed detail integrates out in closed form rather than by\n      // quadrature: E[sin(A + 6e)] = sin(A)·exp(-18·sd²). The second term of\n      // the exponent is the same integral for the sine's own `q.x * 7.0`, which\n      // the blur attenuates by exp(-49·sp²/2).\n      let n0 = lqFbm(q * 2.2, sp * 2.2);\n      let damp = exp(-18.0 * n0.y * n0.y - 24.5 * sp * sp);\n      var v = 0.5 + 0.5 * damp * sin(q.x * 7.0 + n0.x * 6.0 + t * 0.35);\n      v = mix(v, lqFbm(q * 1.4 + vec2<f32>(t * 0.03), sp * 1.4).x, 0.25);\n      fcol = lqRamp(v, cA, cB, cC, cD);\n    } else if (md == 1) {\n      // Lumen — two ridged fields multiplied into filaments. The two fields are\n      // independent, so each integrates its own detail out before the product.\n      let v = lqRidgeS(lqFbm(q * 1.4 + vec2<f32>(t * 0.06, 0.0), sp * 1.4), u.sharp)\n            * lqRidgeS(lqFbm(q * 1.7 - vec2<f32>(0.0, t * 0.05), sp * 1.7), u.sharp);\n      fcol = lqRamp(pow(v, 0.7), cA, cB, cC, cD);\n    } else if (md == 6) {\n      // Sprig — noise warped by noise, with a ridged edge darkening it.\n      let v = lqFbm(q * 1.3 + vec2<f32>(1.5 * lqFbm(q * 2.6 + vec2<f32>(t * 0.025), sp * 2.6).x), sp * 1.3);\n      let edge = lqRidgeS(lqFbm(q * 2.1 + vec2<f32>(7.0), sp * 2.1), 1.3);\n      fcol = lqRamp(lqStepS(v, 0.1, 0.9), cA, cB, cC, cD);\n      fcol = fcol * (1.0 - 0.18 * edge);\n    } else {\n      // Haze and Smoke — the same rising plume at two palettes.\n      let q2 = q + vec2<f32>(0.0, -t * 0.14);\n      let v = lqFbm(q2 * 1.6 + vec2<f32>(2.2 * lqFbm(q2 * 2.4 + vec2<f32>(0.0, -t * 0.05), sp * 2.4).x), sp * 1.6);\n      fcol = lqRamp(lqPowS(v, 1.5), cA, cB, cC, cD);\n    }\n  }\n\n  // The sheet's shared tail: a highlight up-left, a shadow down-right, and a\n  // darkened limb. All three are far below the blur's cutoff, so they are the\n  // sheet's own expressions untouched. The grain term the sheet ends on is not\n  // ported — see the header. The two `1 - shade*k*smoothstep(...)` terms are\n  // multiplicative darkening, not colours, so they stay literal.\n  fcol = mix(fcol, u.highlightColor.rgb,\n             u.shade * 0.3 * smoothstep(0.25, 1.25, dot(fu, vec2<f32>(-0.32, 0.78))));\n  fcol = fcol * (1.0 - u.shade * 0.42 * smoothstep(-0.05, 1.25, dot(fu, vec2<f32>(0.45, -0.62))));\n  fcol = fcol * (1.0 - u.shade * 0.3 * smoothstep(0.72, 1.0, df));\n  return clamp(fcol, vec3<f32>(0.0), vec3<f32>(1.0));\n}\n\n// ---------------------------------------------------------------------------\n// The shell.\n// ---------------------------------------------------------------------------\n\n// Source-over onto an opaque destination, straight (un-premultiplied) sRGB.\nfn glsOver(dst: vec3<f32>, src: vec3<f32>, a: f32) -> vec3<f32> {\n  let k = clamp(a, 0.0, 1.0);\n  return src * k + dst * (1.0 - k);\n}\n\nfn glsRefractionProfile(t: f32) -> f32 {\n  let depth = clamp(t, 0.0, 1.0);\n  let circular = sqrt(max(1.0 - (1.0 - depth) * (1.0 - depth), 0.0));\n  return 1.0 - circular;\n}\n\nfn glsHighlightLobe(normal: vec2<f32>, direction: vec2<f32>, cut: f32,\n                     power: f32) -> f32 {\n  let angular = clamp((dot(normal, direction) - cut) / max(1.0 - cut, 0.001),\n                      0.0, 1.0);\n  return pow(angular, power);\n}\n\nfn glsContourWave(angle: f32, t: f32) -> vec2<f32> {\n  let style = i32(u.style + 0.5);\n  if (style == 19) {\n    let wave = sin(angle * 2.0 + t * 0.27) * 0.72\n               + sin(angle * 4.0 - t * 0.16 + 2.1) * 0.28;\n    let slope = cos(angle * 2.0 + t * 0.27) * 1.44\n                + cos(angle * 4.0 - t * 0.16 + 2.1) * 1.12;\n    return vec2<f32>(wave, slope);\n  }\n  let wave = sin(angle * 3.0 + t * 0.62) * 0.52\n             + sin(angle * 5.0 - t * 0.41 + 1.7) * 0.31\n             + sin(angle * 2.0 + t * 0.23 + 3.1) * 0.17;\n  let slope = cos(angle * 3.0 + t * 0.62) * 1.56\n              + cos(angle * 5.0 - t * 0.41 + 1.7) * 1.55\n              + cos(angle * 2.0 + t * 0.23 + 3.1) * 0.34;\n  return vec2<f32>(wave, slope);\n}\n\nfn glsContourStrength() -> f32 {\n  if (u.style >= 18.5) { return 0.11; }\n  return select(0.09, 0.16, u.style >= 15.5);\n}\n\nfn glsContourScale(uv: vec2<f32>, t: f32, amount: f32) -> f32 {\n  if (amount <= 0.0) { return 1.0; }\n  let contour = glsContourWave(atan2(uv.y, uv.x), t);\n  return 1.0 + clamp(amount, 0.0, 1.0) * glsContourStrength() * contour.x;\n}\n\nfn glsContourNormal(uv: vec2<f32>, rad: f32, t: f32, amount: f32) -> vec2<f32> {\n  let distance = length(uv);\n  if (distance <= 0.0001) { return vec2<f32>(0.0); }\n  let radial = uv / distance;\n  let contour = glsContourWave(atan2(uv.y, uv.x), t);\n  let slope = clamp(amount, 0.0, 1.0) * glsContourStrength() * contour.y;\n  let tangent = vec2<f32>(-radial.y, radial.x);\n  return normalize(radial - tangent * (rad * slope / distance));\n}\n\nfn orbGlassLiquidAnim(uv01: vec2<f32>) -> vec4<f32> {\n  // The runner hands uv01 with y down from the top, like stitchable MSL's\n  // `position`; the orb was authored bottom-left, so flip back.\n  let fc = vec2<f32>(uv01.x, 1.0 - uv01.y) * u.size;\n  let uv = (2.0 * fc - u.size) / max(min(u.size.x, u.size.y), 1.0);\n\n  let rad = max(u.radius, 0.05);\n  let t = u.time * u.speed;\n  let contourRad = rad * glsContourScale(uv, t, u.contourDeform);\n\n  // Nothing on this pixel — and here that is the whole fluid and the whole\n  // shell skipped, over roughly 60% of the quad. 1.01 is the far edge of the\n  // ball's own coverage, `1 - smoothstep(0.99, 1.01, pd)` on the last line of\n  // this function, which is EXACTLY zero past it, so the full path already\n  // returns opaque black here. An early-out, not a clip: the number is that\n  // coverage term's own far edge, so do not \"tidy\" it to 1.0 — that would\n  // shave the outer half of the limb's antialiasing.\n  //\n  // Tested on `uv` rather than on `pd` because `|uv| > rad * 1.01` IS\n  // `pd > 1.01`, and it keeps `p` and `pd` in the same basic block as\n  // everything that reads them — the shape the four sibling orbs of this port\n  // need, where branching on `d` after computing it makes the compiler stop\n  // folding `uv / rad` into its uses and the moved last bit comes back through\n  // their grain hash as speckle up to 34/255. Glass Liquid has no grain and is\n  // nearly immune either way: at 1024x1024 this costs under a dozen bytes of a\n  // four-million-byte frame, off by 1/255. Those are the branch existing, not a\n  // pixel wrongly skipped — a copy of this guard with a threshold it can never\n  // reach diffs identically, and against it the guard is exactly 0/255.\n  if (length(uv) > contourRad * (1.01 + mfEdgeD(u.edgeSoftness))) {\n    // Off the ball entirely — but the halo lives out here, so hand back\n    // what the edge bank paints on nothing. Exactly black at Glow 0.\n    return vec4<f32>(clamp(mfEdgeGlow(vec3<f32>(0.0), uv, vec2<f32>(0.0), contourRad,\n                                      u.edgeSoftness, u.edgeGlow, u.glowColor.rgb),\n                           vec3<f32>(0.0), vec3<f32>(1.0)), 1.0);\n  }\n\n  let p   = uv / contourRad;     // deformed ball space: |p| == 1 on the edge\n  let pd  = length(p);\n\n  // ---- the fluid ------------------------------------------------------\n  let fu = p / GL_FU;\n\n  // Branch dispatch. Source indices 0/2/4/6 are progA (md < 0); the others are\n  // progB at the sheet's own mode number. An if-chain avoids a runtime-indexed\n  // lookup here.\n  let s = i32(u.style + 0.5);\n  var md: i32 = -1;\n  if (s == 1) { md = 1; }\n  else if (s == 3 || s == 8) { md = 7; }\n  else if (s == 5) { md = 6; }\n  else if (s == 7) { md = 0; }\n\n  let clearFa = 1.0 - smoothstep(GL_CLEAR_EA, GL_CLEAR_EB, pd);\n  let normal = glsContourNormal(uv, rad, t, u.contourDeform);\n  let edgeDepth = max(1.0 - pd, 0.0);\n  let refractionWidth = 0.015 + 0.95 * clamp(u.shellMidAlpha, 0.0, 1.0);\n  let refractionT = edgeDepth / max(refractionWidth, 0.001);\n  let refractionProfile = pow(glsRefractionProfile(refractionT), 0.68);\n  let refractionAmount = 1.6 * clamp(u.glassOpacity, 0.0, 1.0)\n                         * refractionProfile;\n  let refractedP = p - normal * refractionAmount;\n  var fcol = vec3<f32>(0.0);\n  if (clearFa > 0.0) {\n    if (s >= 9) {\n      if (u.glassEnabled > 0.5) {\n        // Three actual fluid evaluations produce optical dispersion. At the\n        // outer boundary the reference lens pulls samples from deep inside the\n        // orb; the channels converge continuously at the inner edge of the\n        // refraction band.\n        let channelSplit = 0.14 * clamp(u.gloss, 0.0, 2.0)\n                           * clamp(u.glassOpacity, 0.0, 1.0)\n                           * refractionProfile;\n        let redSample = glsPresetFluid(refractedP - normal * channelSplit, s, t);\n        let greenSample = glsPresetFluid(refractedP, s, t);\n        let blueSample = glsPresetFluid(refractedP + normal * channelSplit, s, t);\n        fcol = vec3<f32>(redSample.r, greenSample.g, blueSample.b);\n      }\n      else { fcol = glsPresetFluid(p, s, t); }\n    }\n    else { fcol = glsFluid(fu, md, t); }\n  }\n\n  // The no-glass branch is the fluid alone, expanded to the sphere boundary.\n  let lum = dot(fcol, vec3<f32>(0.213, 0.715, 0.072));\n  let clearSat = clamp(vec3<f32>(lum) + (fcol - vec3<f32>(lum)) * 1.22,\n                       vec3<f32>(0.0), vec3<f32>(1.0));\n  var col = glsOver(u.canvasColor.rgb, clearSat, 0.99 * clearFa);\n\n  if (u.glassEnabled > 0.5) {\n    // Surface lighting stays on a thin arc. The broad visual change comes from\n    // the refracted fluid above, not from a translucent white overlay.\n    // Its weights still need enough contrast to keep the exposed colour and\n    // highlight controls perceptible in the compact scene preview.\n    let surfaceWidth = 0.026 + 0.055 * clamp(u.shellEdgeAlpha, 0.0, 1.0);\n    let surfaceBand = (1.0 - smoothstep(0.0, surfaceWidth, edgeDepth)) * clearFa;\n    let opticalRim = pow(surfaceBand, 1.8);\n    col = glsOver(col, u.shellInner.rgb,\n                  opticalRim * u.glassOpacity * 0.45);\n\n    let coolDirection = normalize(vec2<f32>(0.84, 0.54));\n    let warmDirection = normalize(vec2<f32>(-0.62, -0.78));\n    let coolSplit = glsHighlightLobe(normal, coolDirection, -0.32, 1.8);\n    let warmSplit = glsHighlightLobe(normal, warmDirection, -0.28, 2.0);\n    let dispersion = opticalRim * clamp(u.gloss, 0.0, 2.0)\n                     * (0.8 + 0.8 * u.shellEdgeAlpha);\n    col = glsOver(col, u.shellMid.rgb, dispersion * coolSplit);\n    col = glsOver(col, u.shellEdge.rgb, dispersion * warmSplit);\n\n    let edgeShadow = opticalRim * (0.015 + 0.15 * u.shellEdgeAlpha)\n                     * (0.15 + 0.85 * max(dot(normal, vec2<f32>(0.45, -0.89)), 0.0));\n    col = col * (1.0 - edgeShadow);\n\n    let keyDirection = normalize(vec2<f32>(-0.68, 0.73));\n    let fillDirection = normalize(vec2<f32>(0.74, -0.67));\n    let key = opticalRim * glsHighlightLobe(normal, keyDirection, 0.2, 2.8)\n              * clamp(u.sheen, 0.0, 2.0) * 1.4;\n    let fill = opticalRim * glsHighlightLobe(normal, fillDirection, 0.4, 3.6)\n               * clamp(u.sheen, 0.0, 2.0) * 1.0;\n    col = glsOver(col, u.sheenColor.rgb, key);\n    col = glsOver(col, u.specColor.rgb, fill);\n  }\n\n  // The ball's own edge, and nothing outside it — everything the effect does\n  // not paint must be exactly 0 so the page shows through.\n  let ballA = 1.0 - smoothstep(0.99 - mfEdgeD(u.edgeSoftness), 1.01 + mfEdgeD(u.edgeSoftness), pd);\n  col = clamp(col * max(u.exposure, 0.0), vec3<f32>(0.0), vec3<f32>(1.0)) * ballA;\n  // The Orbs edge bank — the Edge group's Glow. Adding zero is exactly\n  // the render this file was diffed against, and zero is the default.\n  let edged = mfEdgeGlow(col, uv, vec2<f32>(0.0), contourRad,\n                         u.edgeSoftness, u.edgeGlow, u.glowColor.rgb);\n  return vec4<f32>(clamp(edged, vec3<f32>(0.0), vec3<f32>(1.0)), 1.0);\n}\n\n\nstruct VOut {\n  @builtin(position) pos: vec4<f32>,\n  @location(0) uv: vec2<f32>,\n};\n\n@vertex\nfn vs_main(@builtin(vertex_index) i: u32) -> VOut {\n  var p = array<vec2<f32>, 3>(\n    vec2<f32>(-1.0, -1.0),\n    vec2<f32>( 3.0, -1.0),\n    vec2<f32>(-1.0,  3.0),\n  );\n  var out: VOut;\n  out.pos = vec4<f32>(p[i], 0.0, 1.0);\n  let uv01 = (p[i] + vec2<f32>(1.0)) * 0.5;\n  out.uv = vec2<f32>(uv01.x, 1.0 - uv01.y);\n  return out;\n}\n\n@fragment\nfn fs_main(in: VOut) -> @location(0) vec4<f32> {\n  let c = orbGlassLiquidAnim(in.uv);\n\n  let fc = vec2<f32>(in.uv.x, 1.0 - in.uv.y) * u.size;\n  let uv = (2.0 * fc - u.size) / max(min(u.size.x, u.size.y), 1.0);\n  let rad = max(u.radius, 0.05);\n  let t = u.time * u.speed;\n  let contourRad = rad * glsContourScale(uv, t, u.contourDeform);\n  let pd = length(uv) / contourRad;\n  let ballA = 1.0 - smoothstep(\n    0.99 - mfEdgeD(u.edgeSoftness),\n    1.01 + mfEdgeD(u.edgeSoftness),\n    pd,\n  );\n  let lum = max(c.r, max(c.g, c.b));\n  let q = (2.0 * fc - u.size) / u.size;\n  let fitEnd = 1.0;\n  let fitFeather = 2.0 / max(min(u.size.x, u.size.y), 1.0);\n  let fitStart = min(mix(contourRad, fitEnd, 0.5), fitEnd - fitFeather);\n  let fit = 1.0 - smoothstep(fitStart, fitEnd, max(abs(q.x), abs(q.y)));\n  let alpha = select(ballA, max(ballA, lum), u.edgeGlow > 0.0);\n\n  return vec4<f32>(c.rgb * fit, clamp(alpha, 0.0, 1.0) * fit);\n}\n";
+    const uniformSeed = [1,1,0,0.8199999928474426,0.7200000286102295,0.36000001430511475,3.200000047683716,0.5,2.200000047683716,0.11999999731779099,0.07999999821186066,0.05999999865889549,0.33000001311302185,0.7599999904632568,2,9,0.004999999888241291,0,0,1,0.5199999809265137,0,2,0.41999998688697815,0.7699999809265137,0.23000000417232513,65,0,0,1,0.2199999988079071,0.25,1,0.8470588326454163,0.41960784792900085,1,0.5098039507865906,0.95686274766922,1,1,1,0.48235294222831726,0.8352941274642944,1,0.5568627715110779,0.42352941632270813,1,1,1,1,1,1,1,1,1,1,0.6078431606292725,0.95686274766922,1,1,0.772549033164978,0.6627451181411743,1,1,0.9176470637321472,0.95686274766922,1,1,0.8627451062202454,0.9176470637321472,1,1,0.0117647061124444,0.01568627543747425,0.03529411926865578,1,0.5843137502670288,0.42352941632270813,1,1,0.9686274528503418,0.9843137264251709,1,1,0.9372549057006836,0.9647058844566345,0.9921568632125854,1,0.8784313797950745,0.9333333373069763,0.9764705896377563,1,0.8313725590705872,0.9019607901573181,0.9686274528503418,1,0.7333333492279053,0.8352941274642944,0.9529411792755127,1,0.6509804129600525,0.7803921699523926,0.9411764740943909,1,0.529411792755127,0.6901960968971252,0.9215686321258545,1,0.43529412150382996,0.6196078658103943,0.9098039269447327,1,0.43529412150382996,0.6196078658103943,0.9098039269447327,1,0.43529412150382996,0.6196078658103943,0.9098039269447327,1,0.43529412150382996,0.6196078658103943,0.9098039269447327,1,0.43529412150382996,0.6196078658103943,0.9098039269447327,1];
+    const canvas = document.querySelector("#orb");
+    const status = document.querySelector("#status");
+    const orbStage = document.querySelector("#orb-stage");
+    const orbHit = document.querySelector(".orb-hit");
+    const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+    let animationFrame = 0;
+    let device = null;
+    let stopped = false;
 
-<!-- Footer -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-logo">李烽立 . AI</div>
-    <div class="footer-note">
-      用产品思维，让 AI 落地生根<br>
-      <span class="mono">© 2025 保留所有权利 · 设计参考 monopo saigon</span>
-    </div>
-  </div>
-</footer>
+    function stopWithError(error) {
+      if (stopped) return;
+      stopped = true;
+      cancelAnimationFrame(animationFrame);
+      device?.destroy();
+      document.documentElement.classList.add("webgpu-fallback");
+      status.hidden = false;
+      status.textContent = "当前浏览器不支持 WebGPU，已启用兼容球体。";
+      console.warn(error instanceof Error ? error.message : String(error));
+    }
 
-<script>
-/* ============================================================
-   自定义光标
-   ============================================================ */
-(function(){
-  const dot=document.getElementById('cursorDot');
-  const ring=document.getElementById('cursorRing');
-  if(window.matchMedia('(hover:none)').matches)return;
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove',e=>{
-    mx=e.clientX;my=e.clientY;
-    dot.style.left=mx+'px';dot.style.top=my+'px';
-  });
-  (function loop(){
-    rx+=(mx-rx)*.14;ry+=(my-ry)*.14;
-    ring.style.left=rx+'px';ring.style.top=ry+'px';
-    requestAnimationFrame(loop);
-  })();
-  const hoverSel='a,button,input,textarea,.project-card,.cap-row,.tag';
-  document.addEventListener('mouseover',e=>{if(e.target.closest(hoverSel))ring.classList.add('is-hover')});
-  document.addEventListener('mouseout',e=>{if(e.target.closest(hoverSel))ring.classList.remove('is-hover')});
-})();
+    async function start() {
+      if (!navigator.gpu) throw new Error("WebGPU is not supported in this environment.");
+      const adapter = await navigator.gpu.requestAdapter();
+      if (!adapter) throw new Error("No compatible WebGPU adapter was found.");
+      device = await adapter.requestDevice();
+      const context = canvas.getContext("webgpu");
+      if (!context) throw new Error("Unable to create a WebGPU canvas context.");
 
-/* ============================================================
-   导航 / 进度 / 返回顶部
-   ============================================================ */
-(function(){
-  const nav=document.getElementById('nav');
-  const burger=document.getElementById('burger');
-  const links=document.getElementById('navLinks');
-  const progress=document.getElementById('scrollProgress');
-  const backTop=document.getElementById('backTop');
+      const format = navigator.gpu.getPreferredCanvasFormat();
+      context.configure({ device, format, alphaMode: "premultiplied" });
+      const transparentShaderSource = shaderSource
+        .replace(
+          "color = color + u.highlightColor.rgb * whiteCore * (0.18 + 0.1 * low);",
+          "let siriTheme = clamp(u.metalPhase, 0.0, 1.0); color = color + u.highlightColor.rgb * whiteCore * (0.18 + 0.1 * low);",
+        )
+        .replace(
+          "color = color / (vec3<f32>(1.0) + color * 0.18);\n  return glsFinishPresetFluid(color, p);",
+          "color = color / (vec3<f32>(1.0) + color * 0.18); let adaptiveCoreMask = siriTheme * smoothstep(0.015, 0.55, whiteCore) * 0.90; color = mix(color, vec3<f32>(0.18, 0.22, 0.31), adaptiveCoreMask);\n  return glsFinishPresetFluid(color, p);",
+        )
+        .replace(
+          "var col = glsOver(u.canvasColor.rgb, clearSat, 0.99 * clearFa);",
+          "let themeMix = clamp(u.metalPhase, 0.0, 1.0); let opaqueCol = glsOver(u.canvasColor.rgb, clearSat, 0.99 * clearFa); let clearCol = clearSat * clearFa; var col = mix(opaqueCol, clearCol, themeMix);",
+        )
+        .replace(
+          "return vec4<f32>(c.rgb * fit, clamp(alpha, 0.0, 1.0) * fit);",
+          "let themeMix = clamp(u.metalPhase, 0.0, 1.0); let cMax = max(c.r, max(c.g, c.b)); let cMin = min(c.r, min(c.g, c.b)); let chroma = cMax - cMin; let luma = dot(c.rgb, vec3<f32>(0.213, 0.715, 0.072)); let vividColor = clamp(vec3<f32>(luma) + (c.rgb - vec3<f32>(luma)) * 1.95, vec3<f32>(0.0), vec3<f32>(1.0)); let colorAlpha = 0.76 * smoothstep(0.10, 0.36, chroma); let highlightAlpha = 0.14 * smoothstep(0.82, 0.99, cMax) * smoothstep(0.08, 0.28, chroma); let rimAlpha = 0.15 * smoothstep(0.90, 1.0, pd); let clearAlpha = clamp((colorAlpha + highlightAlpha + rimAlpha) * ballA, 0.0, 0.78) * fit; let opaqueAlpha = clamp(alpha, 0.0, 1.0) * fit; let outAlpha = mix(opaqueAlpha, clearAlpha, themeMix); let darkRGB = c.rgb * fit; let clearRGB = vividColor * clearAlpha; return vec4<f32>(mix(darkRGB, clearRGB, themeMix), outAlpha);",
+        );
+      if (!transparentShaderSource.includes("let adaptiveCoreMask") || !transparentShaderSource.includes("let colorAlpha")) throw new Error("Unable to apply the adaptive orb output patch.");
+      const shader = device.createShaderModule({ code: transparentShaderSource });
+      const compilation = await shader.getCompilationInfo();
+      const errors = compilation.messages.filter((message) => message.type === "error");
+      if (errors.length) {
+        throw new Error(errors.map((message) => `${message.lineNum}:${message.linePos} ${message.message}`).join("\n"));
+      }
 
-  window.addEventListener('scroll',()=>{
-    const y=window.scrollY;
-    nav.classList.toggle('scrolled',y>40);
-    backTop.classList.toggle('show',y>600);
-    const h=document.documentElement.scrollHeight-window.innerHeight;
-    progress.style.width=(y/h*100)+'%';
-    document.querySelectorAll('section[id]').forEach(s=>{
-      const top=s.offsetTop-140,bottom=top+s.offsetHeight;
-      const link=document.querySelector(`.nav-links a[href="#${s.id}"]`);
-      if(link){link.classList.toggle('active',y>=top&&y<bottom)}
+      const pipeline = device.createRenderPipeline({
+        layout: "auto",
+        vertex: { module: shader, entryPoint: "vs_main" },
+        fragment: { module: shader, entryPoint: "fs_main", targets: [{ format }] },
+        primitive: { topology: "triangle-list" },
+      });
+      const values = new Float32Array(uniformSeed);
+      values[75] = 0;
+      values[28] = Number(getComputedStyle(document.documentElement).getPropertyValue("--orb-theme")) || 0;
+      window.__orbUniforms = values;
+      const uniformBuffer = device.createBuffer({
+        size: values.byteLength,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+      const bindGroup = device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [{ binding: 0, resource: { buffer: uniformBuffer } }],
+      });
+      const startedAt = performance.now();
+
+      device.lost.then((info) => {
+        stopWithError(new Error(`WebGPU device lost: ${info.message || info.reason}`));
+      });
+      device.addEventListener("uncapturederror", (event) => {
+        event.preventDefault();
+        stopWithError(new Error(`WebGPU rendering error: ${event.error.message}`));
+      });
+
+      function frame(now) {
+        if (stopped) return;
+        try {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const width = Math.max(1, Math.floor(canvas.clientWidth * dpr));
+          const height = Math.max(1, Math.floor(canvas.clientHeight * dpr));
+          if (canvas.width !== width || canvas.height !== height) {
+            canvas.width = width;
+            canvas.height = height;
+          }
+          values[0] = width;
+          values[1] = height;
+          values[2] = (now - startedAt) / 1000;
+          values[21] *= 0.92;
+          device.queue.writeBuffer(uniformBuffer, 0, values);
+
+          const encoder = device.createCommandEncoder();
+          const pass = encoder.beginRenderPass({
+            colorAttachments: [{
+              view: context.getCurrentTexture().createView(),
+              clearValue: { r: 0, g: 0, b: 0, a: 0 },
+              loadOp: "clear",
+              storeOp: "store",
+            }],
+          });
+          pass.setPipeline(pipeline);
+          pass.setBindGroup(0, bindGroup);
+          pass.draw(3);
+          pass.end();
+          device.queue.submit([encoder.finish()]);
+          if (!motionPreference.matches) animationFrame = requestAnimationFrame(frame);
+        } catch (error) {
+          stopWithError(error);
+        }
+      }
+
+      animationFrame = requestAnimationFrame(frame);
+    }
+
+    window.addEventListener("pagehide", () => {
+      stopped = true;
+      cancelAnimationFrame(animationFrame);
+      device?.destroy();
+    }, { once: true });
+    start().catch((error) => {
+      stopWithError(error);
     });
-  },{passive:true});
 
-  burger.addEventListener('click',()=>{
-    links.classList.toggle('open');
-    const sp=burger.querySelectorAll('span');
-    sp[0].style.transform=links.classList.contains('open')?'rotate(45deg) translateY(5px)':'';
-    sp[1].style.opacity=links.classList.contains('open')?'0':'1';
-    sp[2].style.transform=links.classList.contains('open')?'rotate(-45deg) translateY(-5px)':'';
-  });
-  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
-    links.classList.remove('open');
-    const sp=burger.querySelectorAll('span');
-    sp[0].style.transform='';sp[1].style.opacity='1';sp[2].style.transform='';
-  }));
-  backTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-})();
+    const scenes = [...document.querySelectorAll(".scene")];
+    const navLinks = [...document.querySelectorAll(".chapter-nav a")];
+    const progressFill = document.querySelector(".progress-fill");
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const desktopStates = [
+      { x: 70, y: 52, s: 1,    g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 50, y: 50, s: .48,  g: 0, bg: "#181817", fg: "#f2efe8" },
+      { x: 7,  y: 55, s: 1.30, g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 82, y: 53, s: .66,  g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 18, y: 48, s: .90,  g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 50, y: 52, s: 1.34, g: 0, bg: "#121212", fg: "#f4f1ea" },
+    ];
+    const mobileStates = [
+      { x: 50, y: 59, s: .88,  g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 50, y: 47, s: .42,  g: 0, bg: "#181817", fg: "#f2efe8" },
+      { x: -8, y: 38, s: .96, g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 82, y: 30, s: .55,  g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 18, y: 30, s: .66,  g: 1, bg: "#F5FBFF", fg: "#171717" },
+      { x: 50, y: 55, s: 1.05, g: 0, bg: "#121212", fg: "#f4f1ea" },
+    ];
 
-/* ============================================================
-   滚动显现
-   ============================================================ */
-(function(){
-  const io=new IntersectionObserver(entries=>{
-    entries.forEach(en=>{
-      if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}
+    let metrics = [];
+    let scrollTicking = false;
+    let visualFrame = 0;
+    let currentVisual = null;
+    let targetVisual = null;
+    let lastVisualTime = performance.now();
+    let pointerX = 0;
+    let pointerY = 0;
+    const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+    const mix = (a, b, amount) => a + (b - a) * amount;
+    const smooth = (value) => value * value * (3 - 2 * value);
+    const smoother = (value) => value * value * value * (value * (value * 6 - 15) + 10);
+    const color = (hex) => [1, 3, 5].map((index) => parseInt(hex.slice(index, index + 2), 16));
+    const mixColor = (a, b, amount) => {
+      const from = color(a);
+      const to = color(b);
+      return from.map((channel, index) => mix(channel, to[index], amount));
+    };
+    const cssColor = (channels) => `rgb(${channels.map((channel) => Math.round(channel)).join(" ")})`;
+
+    function renderVisual() {
+      if (!currentVisual) return;
+      orbStage.style.setProperty("--orb-x", currentVisual.x);
+      orbStage.style.setProperty("--orb-y", currentVisual.y);
+      orbStage.style.setProperty("--orb-scale", currentVisual.s);
+      const background = cssColor(currentVisual.bg);
+      document.documentElement.style.setProperty("--page-bg", background);
+      document.documentElement.style.setProperty("--page-fg", cssColor(currentVisual.fg));
+      document.documentElement.style.setProperty("--orb-theme", currentVisual.g);
+      if (window.__orbUniforms) window.__orbUniforms[28] = currentVisual.g;
+      metaTheme.setAttribute("content", background);
+    }
+
+    function animateVisual(now) {
+      visualFrame = 0;
+      if (!currentVisual || !targetVisual || motionPreference.matches) return;
+      const deltaTime = clamp(now - lastVisualTime, 8, 32);
+      lastVisualTime = now;
+      const orbAmount = 1 - Math.exp(-deltaTime / 180);
+      const colorAmount = 1 - Math.exp(-deltaTime / 270);
+
+      currentVisual.x = mix(currentVisual.x, targetVisual.x, orbAmount);
+      currentVisual.y = mix(currentVisual.y, targetVisual.y, orbAmount);
+      currentVisual.s = mix(currentVisual.s, targetVisual.s, orbAmount);
+      currentVisual.g = mix(currentVisual.g, targetVisual.g, colorAmount);
+      currentVisual.bg = currentVisual.bg.map((channel, index) => mix(channel, targetVisual.bg[index], colorAmount));
+      currentVisual.fg = currentVisual.fg.map((channel, index) => mix(channel, targetVisual.fg[index], colorAmount));
+      renderVisual();
+
+      const orbDistance = Math.max(
+        Math.abs(currentVisual.x - targetVisual.x),
+        Math.abs(currentVisual.y - targetVisual.y),
+        Math.abs(currentVisual.s - targetVisual.s) * 20,
+      );
+      const colorDistance = Math.max(
+        Math.abs(currentVisual.g - targetVisual.g) * 255,
+        ...currentVisual.bg.map((channel, index) => Math.abs(channel - targetVisual.bg[index])),
+        ...currentVisual.fg.map((channel, index) => Math.abs(channel - targetVisual.fg[index])),
+      );
+      if (orbDistance > .015 || colorDistance > .25) {
+        visualFrame = requestAnimationFrame(animateVisual);
+      } else {
+        currentVisual = {
+          ...targetVisual,
+          bg: [...targetVisual.bg],
+          fg: [...targetVisual.fg],
+        };
+        renderVisual();
+      }
+    }
+
+    function updateVisual(target, immediate = false) {
+      targetVisual = target;
+      if (!currentVisual || immediate || motionPreference.matches) {
+        cancelAnimationFrame(visualFrame);
+        visualFrame = 0;
+        currentVisual = { ...target, bg: [...target.bg], fg: [...target.fg] };
+        renderVisual();
+        return;
+      }
+      if (!visualFrame) {
+        lastVisualTime = performance.now();
+        visualFrame = requestAnimationFrame(animateVisual);
+      }
+    }
+
+    function measure() {
+      const pageY = window.scrollY;
+      metrics = scenes.map((scene) => {
+        const rect = scene.getBoundingClientRect();
+        const top = rect.top + pageY;
+        return { top, range: Math.max(1, rect.height - innerHeight) };
+      });
+      syncScroll();
+    }
+
+    function syncScroll() {
+      scrollTicking = false;
+      if (!metrics.length) return;
+      const pageY = window.scrollY;
+      let active = 0;
+      for (let index = 1; index < metrics.length; index += 1) {
+        if (pageY >= metrics[index].top - innerHeight * .3) active = index;
+      }
+
+      const currentMetric = metrics[active];
+      const local = clamp((pageY - currentMetric.top) / currentMetric.range);
+      const reduced = motionPreference.matches;
+      const blendProgress = clamp((local - .19) / .62);
+      const blend = reduced ? (local > .5 ? 1 : 0) : smoother(blendProgress);
+      const states = matchMedia("(max-width: 720px)").matches ? mobileStates : desktopStates;
+      const from = states[active];
+      const to = states[Math.min(active + 1, states.length - 1)];
+
+      updateVisual({
+        x: mix(from.x, to.x, blend) + pointerX,
+        y: mix(from.y, to.y, blend) + pointerY,
+        s: mix(from.s, to.s, blend),
+        g: mix(from.g, to.g, blend),
+        bg: mixColor(from.bg, to.bg, blend),
+        fg: mixColor(from.fg, to.fg, blend),
+      }, reduced);
+
+      scenes.forEach((scene, index) => {
+        const frame = scene.querySelector(".scene-frame");
+        const sceneMetric = metrics[index];
+        const sceneLocal = clamp((pageY - sceneMetric.top) / sceneMetric.range);
+        const fade = reduced ? 1 : 1 - smooth(clamp((sceneLocal - .55) / .45)) * .8;
+        frame.style.setProperty("--scene-opacity", fade);
+        scene.querySelectorAll("[data-parallax]").forEach((element) => {
+          if (reduced) {
+            element.style.transform = "none";
+            return;
+          }
+          const distance = Number(element.dataset.parallax || 0);
+          element.style.transform = `translate3d(0, ${(sceneLocal - .5) * distance}px, 0)`;
+        });
+      });
+
+      navLinks.forEach((link, index) => {
+        if (index === active) link.setAttribute("aria-current", "true");
+        else link.removeAttribute("aria-current");
+      });
+      const maximum = Math.max(1, document.documentElement.scrollHeight - innerHeight);
+      progressFill.style.transform = `scaleY(${clamp(pageY / maximum)})`;
+    }
+
+    function requestScrollSync() {
+      if (scrollTicking) return;
+      scrollTicking = true;
+      requestAnimationFrame(syncScroll);
+    }
+
+    if (matchMedia("(pointer: fine)").matches && !motionPreference.matches) {
+      window.addEventListener("pointermove", (event) => {
+        pointerX = (event.clientX / innerWidth - .5) * 2.8;
+        pointerY = (event.clientY / innerHeight - .5) * 2;
+        requestScrollSync();
+      }, { passive: true });
+    }
+
+    orbHit.addEventListener("click", () => {
+      orbHit.dataset.touched = performance.now().toFixed(0);
+      const ripple = document.createElement("span");
+      ripple.className = "ripple";
+      document.querySelector("#orb-shell").append(ripple);
+      if (motionPreference.matches) setTimeout(() => ripple.remove(), 180);
+      else ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+      if (window.__orbUniforms) window.__orbUniforms[21] = .72;
     });
-  },{threshold:.12});
-  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-})();
 
-/* ============================================================
-   数字滚动
-   ============================================================ */
-(function(){
-  const nums=document.querySelectorAll('[data-count]');
-  const io=new IntersectionObserver(entries=>{
-    entries.forEach(en=>{
-      if(!en.isIntersecting)return;
-      const el=en.target,target=+el.dataset.count,suffix=el.dataset.suffix||'';
-      const dur=1800,t0=performance.now();
-      (function step(t){
-        const p=Math.min((t-t0)/dur,1);
-        const ease=1-Math.pow(1-p,3);
-        el.textContent=Math.round(target*ease)+suffix;
-        if(p<1)requestAnimationFrame(step);
-      })(t0);
-      io.unobserve(el);
-    });
-  },{threshold:.5});
-  nums.forEach(n=>io.observe(n));
-})();
-
-/* ============================================================
-   表单（本地演示）
-   ============================================================ */
-(function(){
-  const form=document.getElementById('contactForm');
-  const msg=document.getElementById('formMsg');
-  form.addEventListener('submit',e=>{
-    e.preventDefault();
-    msg.textContent='✓ 消息已记录（本地演示，可接入邮箱服务）。谢谢你的留言！';
-    form.reset();
-    setTimeout(()=>msg.textContent='',5000);
-  });
-})();
-</script>
+    window.addEventListener("scroll", requestScrollSync, { passive: true });
+    window.addEventListener("resize", measure, { passive: true });
+    window.addEventListener("load", measure, { once: true });
+    motionPreference.addEventListener("change", measure);
+    measure();
+  </script>
 </body>
 </html>
